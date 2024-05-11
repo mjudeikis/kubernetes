@@ -39,8 +39,12 @@ type clientGetter struct {
 // uses the specified client to retrieve service accounts, pods, secrets and nodes.
 // The client should NOT authenticate using a service account token
 // the returned getter will be used to retrieve, or recursion will result.
-func NewGetterFromClient(c clientset.Interface, secretLister v1listers.SecretLister, serviceAccountLister v1listers.ServiceAccountLister, podLister v1listers.PodLister, nodeLister v1listers.NodeLister) serviceaccount.ServiceAccountTokenGetter {
-	return clientGetter{c, secretLister, serviceAccountLister, podLister, nodeLister}
+func NewGetterFromClient(c clientset.Interface, secretLister v1listers.SecretLister, serviceAccountLister v1listers.ServiceAccountLister) serviceaccount.ServiceAccountTokenGetter {
+	return clientGetter{
+		client:               c,
+		secretLister:         secretLister,
+		serviceAccountLister: serviceAccountLister,
+	}
 }
 
 func (c clientGetter) GetServiceAccount(namespace, name string) (*v1.ServiceAccount, error) {
