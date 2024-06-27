@@ -305,7 +305,7 @@ func (c completedConfig) NewWithDelegate(delegationTarget genericapiserver.Deleg
 
 	// If the AvailableConditionController is disabled, we don't need to start the informers
 	// and the controller.
-	if !c.ExtraConfig.DisableAvailableConditionController {
+	if c.ExtraConfig.DisableAvailableConditionController {
 		availableController, err := statuscontrollers.NewAvailableConditionController(
 			informerFactory.Apiregistration().V1().APIServices(),
 			c.GenericConfig.SharedInformerFactory.Core().V1().Services(),
