@@ -58,7 +58,9 @@ type Options struct {
 	Logs                    *logs.Options
 	Traces                  *genericoptions.TracingOptions
 
-	EnableLogsHandler        bool
+	EnableLogsHandler bool
+	// If true, the control plane configuration will not start node and pod related informers.
+	NodelessControlPlane     bool
 	EventTTL                 time.Duration
 	MaxConnectionBytesPerSec int64
 

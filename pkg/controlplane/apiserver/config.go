@@ -46,11 +46,13 @@ import (
 	"k8s.io/client-go/dynamic"
 	clientgoinformers "k8s.io/client-go/informers"
 	clientgoclientset "k8s.io/client-go/kubernetes"
+	v1listers "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/util/keyutil"
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
 	openapicommon "k8s.io/kube-openapi/pkg/common"
 
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
+	serviceaccountcontroller "k8s.io/kubernetes/pkg/controller/serviceaccount"
 	controlplaneadmission "k8s.io/kubernetes/pkg/controlplane/apiserver/admission"
 	"k8s.io/kubernetes/pkg/controlplane/apiserver/options"
 	"k8s.io/kubernetes/pkg/controlplane/controller/clusterauthenticationtrust"
@@ -204,8 +206,37 @@ func BuildGenericConfig(
 
 	ctx := wait.ContextForChannel(genericConfig.DrainedNotify())
 
+	var nodeLister v1listers.NodeLister
+	if utilfeature.DefaultFeatureGate.Enabled(features.ServiceAccountTokenNodeBindingValidation) {
+		nodeLister = versionedInformers.Core().V1().Nodes().Lister()
+	}
+
+	var podLister v1listers.PodLister
+	podLister = versionedInformers.Core().V1().Pods().Lister()
+	if s.NodelessControlPlane {
+		nodeLister = nil
+		podLister = nil
+	}
+
+	serviceAccountTokenGetter := serviceaccountcontroller.NewGetterFromClient(
+		clientgoExternalClient,
+		versionedInformers.Core().V1().Secrets().Lister(),
+		versionedInformers.Core().V1().ServiceAccounts().Lister(),
+		podLister,
+		nodeLister,
+	)
+
 	// Authentication.ApplyTo requires already applied OpenAPIConfig and EgressSelector if present
-	if lastErr = s.Authentication.ApplyTo(ctx, &genericConfig.Authentication, genericConfig.SecureServing, genericConfig.EgressSelector, genericConfig.OpenAPIConfig, genericConfig.OpenAPIV3Config, clientgoExternalClient, versionedInformers, genericConfig.APIServerID); lastErr != nil {
+	if lastErr = s.Authentication.ApplyTo(ctx,
+		&genericConfig.Authentication,
+		genericConfig.SecureServing,
+		genericConfig.EgressSelector,
+		genericConfig.OpenAPIConfig,
+		genericConfig.OpenAPIV3Config,
+		clientgoExternalClient,
+		serviceAccountTokenGetter,
+		versionedInformers,
+		genericConfig.APIServerID); lastErr != nil {
 		return
 	}
 

@@ -51,6 +51,9 @@ func (c clientGetter) GetServiceAccount(namespace, name string) (*v1.ServiceAcco
 }
 
 func (c clientGetter) GetPod(namespace, name string) (*v1.Pod, error) {
+	if c.podLister == nil {
+		return nil, apierrors.NewNotFound(v1.Resource("pods"), name)
+	}
 	if pod, err := c.podLister.Pods(namespace).Get(name); err == nil {
 		return pod, nil
 	}
