@@ -17,6 +17,7 @@ limitations under the License.
 package discovery
 
 import (
+	"context"
 	"net/http"
 	"sync"
 
@@ -33,10 +34,19 @@ import (
 // GroupManager is an interface that allows dynamic mutation of the existing webservice to handle
 // API groups being added or removed.
 type GroupManager interface {
+	GroupLister
+
 	AddGroup(apiGroup metav1.APIGroup)
 	RemoveGroup(groupName string)
 	ServeHTTP(resp http.ResponseWriter, req *http.Request)
 	WebService() *restful.WebService
+}
+
+// GroupLister knows how to list APIGroups for discovery.
+type GroupLister interface {
+	// Groups returns APIGroups for discovery, filling in ServerAddressByClientCIDRs
+	// based on data in req.
+	Groups(ctx context.Context, req *http.Request) ([]metav1.APIGroup, error)
 }
 
 // rootAPIsHandler creates a webservice serving api group discovery.
@@ -92,6 +102,29 @@ func (s *rootAPIsHandler) RemoveGroup(groupName string) {
 			break
 		}
 	}
+}
+
+func (s *rootAPIsHandler) Groups(ctx context.Context, req *http.Request) ([]metav1.APIGroup, error) {
+	s.lock.RLock()
+	defer s.lock.RUnlock()
+
+	return s.groupsLocked(ctx, req), nil
+}
+
+// groupsLocked returns the APIGroupList discovery information for this handler.
+// The caller must hold the lock before invoking this method to avoid data races.
+func (s *rootAPIsHandler) groupsLocked(ctx context.Context, req *http.Request) []metav1.APIGroup {
+	clientIP := utilnet.GetClientIP(req)
+	serverCIDR := s.addresses.ServerAddressByClientCIDRs(clientIP)
+
+	groups := make([]metav1.APIGroup, len(s.apiGroupNames))
+	for i, groupName := range s.apiGroupNames {
+		group := s.apiGroups[groupName]
+		group.ServerAddressByClientCIDRs = serverCIDR
+		groups[i] = group
+	}
+
+	return groups
 }
 
 func (s *rootAPIsHandler) ServeHTTP(resp http.ResponseWriter, req *http.Request) {
