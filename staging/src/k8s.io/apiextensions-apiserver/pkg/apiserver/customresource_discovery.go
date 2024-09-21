@@ -17,10 +17,16 @@ limitations under the License.
 package apiserver
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"sync"
 
+	apiextensionshelpers "k8s.io/apiextensions-apiserver/pkg/apihelpers"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	listers "k8s.io/apiextensions-apiserver/pkg/client/listers/apiextensions/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apiserver/pkg/endpoints/discovery"
 )
@@ -77,6 +83,8 @@ type groupDiscoveryHandler struct {
 	discovery     map[string]*discovery.APIGroupHandler
 
 	delegate http.Handler
+
+	crdLister listers.CustomResourceDefinitionLister
 }
 
 func (r *groupDiscoveryHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
@@ -115,6 +123,70 @@ func (r *groupDiscoveryHandler) unsetDiscovery(group string) {
 	defer r.discoveryLock.Unlock()
 
 	delete(r.discovery, group)
+}
+
+func (r *groupDiscoveryHandler) Groups(ctx context.Context, _ *http.Request) ([]metav1.APIGroup, error) {
+	apiVersionsForDiscovery := map[string][]metav1.GroupVersionForDiscovery{}
+	versionsForDiscoveryMap := map[string]map[metav1.GroupVersion]bool{}
+
+	crds, err := r.crdLister.List(labels.Everything())
+	if err != nil {
+		return []metav1.APIGroup{}, err
+	}
+
+	for _, crd := range crds {
+		if !apiextensionshelpers.IsCRDConditionTrue(crd, apiextensionsv1.Established) {
+			continue
+		}
+
+		for _, v := range crd.Spec.Versions {
+			if !v.Served {
+				continue
+			}
+
+			if crd.Spec.Group == "" {
+				// Don't include CRDs in the core ("") group in /apis discovery. They
+				// instead are in /api/v1 handled elsewhere.
+				continue
+			}
+			groupVersion := crd.Spec.Group + "/" + v.Name
+
+			gv := metav1.GroupVersion{Group: crd.Spec.Group, Version: v.Name}
+
+			m, ok := versionsForDiscoveryMap[crd.Spec.Group]
+			if !ok {
+				m = make(map[metav1.GroupVersion]bool)
+			}
+
+			if !m[gv] {
+				m[gv] = true
+				groupVersions := apiVersionsForDiscovery[crd.Spec.Group]
+				groupVersions = append(groupVersions, metav1.GroupVersionForDiscovery{
+					GroupVersion: groupVersion,
+					Version:      v.Name,
+				})
+				apiVersionsForDiscovery[crd.Spec.Group] = groupVersions
+			}
+
+			versionsForDiscoveryMap[crd.Spec.Group] = m
+		}
+	}
+
+	for _, versions := range apiVersionsForDiscovery {
+		sortGroupDiscoveryByKubeAwareVersion(versions)
+
+	}
+
+	groupList := make([]metav1.APIGroup, 0, len(apiVersionsForDiscovery))
+	for group, versions := range apiVersionsForDiscovery {
+		g := metav1.APIGroup{
+			Name:             group,
+			Versions:         versions,
+			PreferredVersion: versions[0],
+		}
+		groupList = append(groupList, g)
+	}
+	return groupList, nil
 }
 
 // splitPath returns the segments for a URL path.

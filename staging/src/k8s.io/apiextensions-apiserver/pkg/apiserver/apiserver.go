@@ -107,6 +107,8 @@ type CustomResourceDefinitions struct {
 
 	// provided for easier embedding
 	Informers externalinformers.SharedInformerFactory
+
+	DiscoveryGroupLister discovery.GroupLister
 }
 
 // Complete fills in any fields not set that are required to have valid data. It's mutating the receiver.
@@ -179,7 +181,11 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 	groupDiscoveryHandler := &groupDiscoveryHandler{
 		discovery: map[string]*discovery.APIGroupHandler{},
 		delegate:  delegateHandler,
+		crdLister: s.Informers.Apiextensions().V1().CustomResourceDefinitions().Lister(),
 	}
+
+	s.DiscoveryGroupLister = groupDiscoveryHandler
+
 	establishingController := establish.NewEstablishingController(s.Informers.Apiextensions().V1().CustomResourceDefinitions(), crdClient.ApiextensionsV1())
 	crdHandler, err := NewCustomResourceDefinitionHandler(
 		versionDiscoveryHandler,
