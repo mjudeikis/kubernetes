@@ -192,5 +192,5 @@ func (o AggregatorOptions) RunAggregator(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	return prepared.Run(ctx)
+	return prepared.RunWithContext(ctx)
 }

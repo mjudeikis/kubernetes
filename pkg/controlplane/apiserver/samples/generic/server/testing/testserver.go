@@ -195,7 +195,7 @@ func StartTestServer(t ktesting.TB, instanceOptions *TestServerInstanceOptions, 
 		prepared, err := s.PrepareRun()
 		if err != nil {
 			errCh <- err
-		} else if err := prepared.Run(tCtx); err != nil {
+		} else if err := prepared.RunWithContext(tCtx); err != nil {
 			errCh <- err
 		}
 	}()

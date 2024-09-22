@@ -161,7 +161,7 @@ func Run(ctx context.Context, opts options.CompletedOptions) error {
 		return err
 	}
 
-	return prepared.Run(ctx)
+	return prepared.RunWithContext(ctx)
 }
 
 // CreateServerChain creates the apiservers connected via delegation.

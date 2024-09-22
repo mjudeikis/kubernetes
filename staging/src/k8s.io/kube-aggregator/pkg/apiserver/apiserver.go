@@ -138,7 +138,7 @@ type preparedAPIAggregator struct {
 }
 
 type APIAggregator interface {
-	PrepareRun() (preparedAPIAggregator, error)
+	PrepareRun() (Runnable, error)
 
 	AddAPIService(apiService *v1.APIService) error
 	RemoveAPIService(apiServiceName string)
@@ -474,7 +474,7 @@ func (c completedConfig) NewWithDelegate(
 
 // PrepareRun prepares the aggregator to run, by setting up the OpenAPI spec &
 // aggregated discovery document and calling the generic PrepareRun.
-func (s *apiAggregator) PrepareRun() (preparedAPIAggregator, error) {
+func (s *apiAggregator) PrepareRun() (Runnable, error) {
 	// add post start hook before generic PrepareRun in order to be before /healthz installation
 	if s.openAPIConfig != nil {
 		s.genericAPIServer.AddPostStartHookOrDie("apiservice-openapi-controller", func(context genericapiserver.PostStartHookContext) error {
@@ -524,7 +524,7 @@ func (s *apiAggregator) PrepareRun() (preparedAPIAggregator, error) {
 	return preparedAPIAggregator{APIAggregator: s, runnable: prepared}, nil
 }
 
-func (s preparedAPIAggregator) Run(ctx context.Context) error {
+func (s preparedAPIAggregator) RunWithContext(ctx context.Context) error {
 	return s.runnable.RunWithContext(ctx)
 }
 
