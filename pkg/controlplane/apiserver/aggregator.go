@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+	"time"
 
 	apiextensionsinformers "k8s.io/apiextensions-apiserver/pkg/client/informers/externalversions/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -41,8 +42,10 @@ import (
 	"k8s.io/kube-aggregator/pkg/apis/apiregistration/v1beta1"
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
+	"k8s.io/kube-aggregator/pkg/client/clientset_generated/clientset"
 	apiregistrationclient "k8s.io/kube-aggregator/pkg/client/clientset_generated/clientset/typed/apiregistration/v1"
-	informers "k8s.io/kube-aggregator/pkg/client/informers/externalversions/apiregistration/v1"
+	informers "k8s.io/kube-aggregator/pkg/client/informers/externalversions"
+	informersapiregistrationv1 "k8s.io/kube-aggregator/pkg/client/informers/externalversions/apiregistration/v1"
 	"k8s.io/kube-aggregator/pkg/controllers/autoregister"
 
 	"k8s.io/kubernetes/pkg/controlplane/apiserver/options"
@@ -125,8 +128,20 @@ func CreateAggregatorConfig(
 	return aggregatorConfig, nil
 }
 
-func CreateAggregatorServer(aggregatorConfig aggregatorapiserver.CompletedConfig, delegateAPIServer genericapiserver.DelegationTarget, crds apiextensionsinformers.CustomResourceDefinitionInformer, crdAPIEnabled bool, apiVersionPriorities map[schema.GroupVersion]APIServicePriority) (*aggregatorapiserver.APIAggregator, error) {
-	aggregatorServer, err := aggregatorConfig.NewWithDelegate(delegateAPIServer)
+func CreateAggregatorServer(aggregatorConfig aggregatorapiserver.CompletedConfig, delegateAPIServer genericapiserver.DelegationTarget, crds apiextensionsinformers.CustomResourceDefinitionInformer, crdAPIEnabled bool, apiVersionPriorities map[schema.GroupVersion]APIServicePriority) (aggregatorapiserver.APIAggregator, error) {
+	apiregistrationClient, err := clientset.NewForConfig(aggregatorConfig.GenericConfig.LoopbackClientConfig)
+	if err != nil {
+		return nil, err
+	}
+	informerFactory := informers.NewSharedInformerFactory(
+		apiregistrationClient,
+		5*time.Minute, // this is effectively used as a refresh interval right now.  Might want to do something nicer later on.
+	)
+
+	aggregatorServer, err := aggregatorConfig.NewWithDelegate(
+		delegateAPIServer,
+		informerFactory,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +151,7 @@ func CreateAggregatorServer(aggregatorConfig aggregatorapiserver.CompletedConfig
 	if err != nil {
 		return nil, err
 	}
-	autoRegistrationController := autoregister.NewAutoRegisterController(aggregatorServer.APIRegistrationInformers.Apiregistration().V1().APIServices(), apiRegistrationClient)
+	autoRegistrationController := autoregister.NewAutoRegisterController(informerFactory.Apiregistration().V1().APIServices(), apiRegistrationClient)
 	apiServices := apiServicesToRegister(delegateAPIServer, autoRegistrationController, apiVersionPriorities)
 
 	type controller interface {
@@ -157,7 +172,7 @@ func CreateAggregatorServer(aggregatorConfig aggregatorapiserver.CompletedConfig
 		}
 	}
 
-	err = aggregatorServer.GenericAPIServer.AddPostStartHook("kube-apiserver-autoregistration", func(context genericapiserver.PostStartHookContext) error {
+	err = aggregatorServer.GenericAPIServer().AddPostStartHook("kube-apiserver-autoregistration", func(context genericapiserver.PostStartHookContext) error {
 		if crdAPIEnabled {
 			go crdRegistrationController.Run(5, context.Done())
 		}
@@ -180,11 +195,11 @@ func CreateAggregatorServer(aggregatorConfig aggregatorapiserver.CompletedConfig
 		return nil, err
 	}
 
-	err = aggregatorServer.GenericAPIServer.AddBootSequenceHealthChecks(
+	err = aggregatorServer.GenericAPIServer().AddBootSequenceHealthChecks(
 		makeAPIServiceAvailableHealthCheck(
 			"autoregister-completion",
 			apiServices,
-			aggregatorServer.APIRegistrationInformers.Apiregistration().V1().APIServices(),
+			informerFactory.Apiregistration().V1().APIServices(),
 		),
 	)
 	if err != nil {
@@ -215,7 +230,7 @@ func makeAPIService(gv schema.GroupVersion, apiVersionPriorities map[schema.Grou
 
 // makeAPIServiceAvailableHealthCheck returns a healthz check that returns healthy
 // once all of the specified services have been observed to be available at least once.
-func makeAPIServiceAvailableHealthCheck(name string, apiServices []*v1.APIService, apiServiceInformer informers.APIServiceInformer) healthz.HealthChecker {
+func makeAPIServiceAvailableHealthCheck(name string, apiServices []*v1.APIService, apiServiceInformer informersapiregistrationv1.APIServiceInformer) healthz.HealthChecker {
 	// Track the auto-registered API services that have not been observed to be available yet
 	pendingServiceNamesLock := &sync.RWMutex{}
 	pendingServiceNames := sets.NewString()

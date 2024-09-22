@@ -406,7 +406,7 @@ func StartTestServer(t ktesting.TB, instanceOptions *TestServerInstanceOptions, 
 		return result, fmt.Errorf("failed to create server chain: %v", err)
 	}
 	if instanceOptions.StorageVersionWrapFunc != nil {
-		server.GenericAPIServer.StorageVersionManager = instanceOptions.StorageVersionWrapFunc(server.GenericAPIServer.StorageVersionManager)
+		server.GenericAPIServer().StorageVersionManager = instanceOptions.StorageVersionWrapFunc(server.GenericAPIServer().StorageVersionManager)
 	}
 
 	errCh = make(chan error)
@@ -420,7 +420,7 @@ func StartTestServer(t ktesting.TB, instanceOptions *TestServerInstanceOptions, 
 		}
 	}()
 
-	client, err := kubernetes.NewForConfig(server.GenericAPIServer.LoopbackClientConfig)
+	client, err := kubernetes.NewForConfig(server.GenericAPIServer().LoopbackClientConfig)
 	if err != nil {
 		return result, fmt.Errorf("failed to create a client: %v", err)
 	}
@@ -501,7 +501,7 @@ func StartTestServer(t ktesting.TB, instanceOptions *TestServerInstanceOptions, 
 	}
 
 	// from here the caller must call tearDown
-	result.ClientConfig = restclient.CopyConfig(server.GenericAPIServer.LoopbackClientConfig)
+	result.ClientConfig = restclient.CopyConfig(server.GenericAPIServer().LoopbackClientConfig)
 	result.ClientConfig.QPS = 1000
 	result.ClientConfig.Burst = 10000
 	result.ServerOpts = s

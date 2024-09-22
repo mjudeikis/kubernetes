@@ -21,6 +21,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -35,6 +36,8 @@ import (
 	"k8s.io/kube-aggregator/pkg/apis/apiregistration/v1beta1"
 	"k8s.io/kube-aggregator/pkg/apiserver"
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
+	"k8s.io/kube-aggregator/pkg/client/clientset_generated/clientset"
+	informers "k8s.io/kube-aggregator/pkg/client/informers/externalversions"
 	"k8s.io/kube-aggregator/pkg/generated/openapi"
 )
 
@@ -168,7 +171,19 @@ func (o AggregatorOptions) RunAggregator(ctx context.Context) error {
 	config.ExtraConfig.ProxyClientCertFile = o.ProxyClientCertFile
 	config.ExtraConfig.ProxyClientKeyFile = o.ProxyClientKeyFile
 
-	server, err := config.Complete().NewWithDelegate(genericapiserver.NewEmptyDelegate())
+	apiregistrationClient, err := clientset.NewForConfig(config.GenericConfig.LoopbackClientConfig)
+	if err != nil {
+		return err
+	}
+	informerFactory := informers.NewSharedInformerFactory(
+		apiregistrationClient,
+		5*time.Minute, // this is effectively used as a refresh interval right now.  Might want to do something nicer later on.
+	)
+
+	server, err := config.Complete().NewWithDelegate(
+		genericapiserver.NewEmptyDelegate(),
+		informerFactory,
+	)
 	if err != nil {
 		return err
 	}
