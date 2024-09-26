@@ -248,7 +248,8 @@ func setup() *testEnvironment {
 			discovery: make(map[schema.GroupVersion]*discovery.APIVersionHandler),
 		},
 		groupDiscoveryHandler: groupDiscoveryHandler{
-			discovery: make(map[string]*discovery.APIGroupHandler),
+			discovery:       make(map[string]*discovery.APIGroupHandler),
+			discoveryGroups: make(map[string]metav1.APIGroup),
 		},
 	}
 

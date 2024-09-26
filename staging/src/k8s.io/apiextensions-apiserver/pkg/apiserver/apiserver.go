@@ -179,9 +179,9 @@ func (c completedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 		delegate:  delegateHandler,
 	}
 	groupDiscoveryHandler := &groupDiscoveryHandler{
-		discovery: map[string]*discovery.APIGroupHandler{},
-		delegate:  delegateHandler,
-		crdLister: s.Informers.Apiextensions().V1().CustomResourceDefinitions().Lister(),
+		discovery:       map[string]*discovery.APIGroupHandler{},
+		discoveryGroups: map[string]metav1.APIGroup{},
+		delegate:        delegateHandler,
 	}
 
 	s.DiscoveryGroupLister = groupDiscoveryHandler
