@@ -161,11 +161,11 @@ func Run(ctx context.Context, opts options.CompletedOptions) error {
 		return err
 	}
 
-	return prepared.Run(ctx)
+	return prepared.RunWithContext(ctx)
 }
 
 // CreateServerChain creates the apiservers connected via delegation.
-func CreateServerChain(config CompletedConfig) (*aggregatorapiserver.APIAggregator, error) {
+func CreateServerChain(config CompletedConfig) (aggregatorapiserver.APIAggregator, error) {
 	// 1. CRDs
 	notFoundHandler := notfoundhandler.New(config.ControlPlane.Generic.Serializer, genericapifilters.NoMuxAndDiscoveryIncompleteKey)
 	apiExtensionsServer, err := config.APIExtensions.New(genericapiserver.NewEmptyDelegateWithCustomHandler(notFoundHandler))
@@ -192,7 +192,13 @@ func CreateServerChain(config CompletedConfig) (*aggregatorapiserver.APIAggregat
 	}
 
 	// 3. Aggregator for APIServices, discovery and OpenAPI
-	aggregatorServer, err := controlplaneapiserver.CreateAggregatorServer(config.Aggregator, nativeAPIs.GenericAPIServer, apiExtensionsServer.Informers.Apiextensions().V1().CustomResourceDefinitions(), crdAPIEnabled, controlplaneapiserver.DefaultGenericAPIServicePriorities())
+	aggregatorServer, err := controlplaneapiserver.CreateAggregatorServer(
+		config.Aggregator,
+		nativeAPIs.GenericAPIServer,
+		apiExtensionsServer.Informers.Apiextensions().V1().CustomResourceDefinitions(),
+		crdAPIEnabled,
+		controlplaneapiserver.DefaultGenericAPIServicePriorities(),
+	)
 	if err != nil {
 		// we don't need special handling for innerStopCh because the aggregator server doesn't create any go routines
 		return nil, fmt.Errorf("failed to create kube-aggregator: %w", err)

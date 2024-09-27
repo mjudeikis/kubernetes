@@ -161,11 +161,11 @@ func Run(ctx context.Context, opts options.CompletedOptions) error {
 		return err
 	}
 
-	return prepared.Run(ctx)
+	return prepared.RunWithContext(ctx)
 }
 
 // CreateServerChain creates the apiservers connected via delegation.
-func CreateServerChain(config CompletedConfig) (*aggregatorapiserver.APIAggregator, error) {
+func CreateServerChain(config CompletedConfig) (aggregatorapiserver.APIAggregator, error) {
 	notFoundHandler := notfoundhandler.New(config.KubeAPIs.ControlPlane.Generic.Serializer, genericapifilters.NoMuxAndDiscoveryIncompleteKey)
 	apiExtensionsServer, err := config.ApiExtensions.New(genericapiserver.NewEmptyDelegateWithCustomHandler(notFoundHandler))
 	if err != nil {

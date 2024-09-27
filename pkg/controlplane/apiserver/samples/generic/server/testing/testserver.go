@@ -195,12 +195,12 @@ func StartTestServer(t ktesting.TB, instanceOptions *TestServerInstanceOptions, 
 		prepared, err := s.PrepareRun()
 		if err != nil {
 			errCh <- err
-		} else if err := prepared.Run(tCtx); err != nil {
+		} else if err := prepared.RunWithContext(tCtx); err != nil {
 			errCh <- err
 		}
 	}()
 
-	client, err := kubernetes.NewForConfig(s.GenericAPIServer.LoopbackClientConfig)
+	client, err := kubernetes.NewForConfig(s.GenericAPIServer().LoopbackClientConfig)
 	if err != nil {
 		return result, fmt.Errorf("failed to create a client: %w", err)
 	}
@@ -273,7 +273,7 @@ func StartTestServer(t ktesting.TB, instanceOptions *TestServerInstanceOptions, 
 	}
 
 	// from here the caller must call tearDown
-	result.ClientConfig = restclient.CopyConfig(s.GenericAPIServer.LoopbackClientConfig)
+	result.ClientConfig = restclient.CopyConfig(s.GenericAPIServer().LoopbackClientConfig)
 	result.ClientConfig.QPS = 1000
 	result.ClientConfig.Burst = 10000
 	result.ServerOpts = o
