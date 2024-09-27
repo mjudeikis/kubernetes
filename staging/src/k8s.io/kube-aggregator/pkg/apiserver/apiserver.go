@@ -43,6 +43,7 @@ import (
 	v1 "k8s.io/kube-aggregator/pkg/apis/apiregistration/v1"
 	v1helper "k8s.io/kube-aggregator/pkg/apis/apiregistration/v1/helper"
 	"k8s.io/kube-aggregator/pkg/apis/apiregistration/v1beta1"
+	"k8s.io/kube-aggregator/pkg/apiserver/miniaggregator"
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
 	"k8s.io/kube-aggregator/pkg/client/clientset_generated/clientset"
 	informers "k8s.io/kube-aggregator/pkg/client/informers/externalversions"
@@ -55,7 +56,6 @@ import (
 	availabilitymetrics "k8s.io/kube-aggregator/pkg/controllers/status/metrics"
 	remoteavailability "k8s.io/kube-aggregator/pkg/controllers/status/remote"
 	apiservicerest "k8s.io/kube-aggregator/pkg/registry/apiservice/rest"
-	openapicommon "k8s.io/kube-openapi/pkg/common"
 )
 
 // making sure we only register metrics once into legacy registry
@@ -112,13 +112,16 @@ type ExtraConfig struct {
 
 // Config represents the configuration needed to create an APIAggregator.
 type Config struct {
-	GenericConfig *genericapiserver.RecommendedConfig
-	ExtraConfig   ExtraConfig
+	GenericConfig           *genericapiserver.RecommendedConfig
+	MiniAPIAggregagorConfig *miniaggregator.Config
+	ExtraConfig             ExtraConfig
 }
 
 type completedConfig struct {
-	GenericConfig genericapiserver.CompletedConfig
-	ExtraConfig   *ExtraConfig
+	GenericConfig           genericapiserver.CompletedConfig
+	MiniAPIAggregatorConfig miniaggregator.CompletedConfig
+
+	ExtraConfig *ExtraConfig
 }
 
 // CompletedConfig same as Config, just to swap private object.
@@ -139,6 +142,8 @@ type preparedAPIAggregator struct {
 
 // APIAggregator contains state for a Kubernetes cluster master/api server.
 type APIAggregator struct {
+	*miniaggregator.MiniAPIAggregator
+
 	GenericAPIServer *genericapiserver.GenericAPIServer
 
 	// provided for easier embedding
@@ -163,18 +168,11 @@ type APIAggregator struct {
 	// Information needed to determine routing for the aggregator
 	serviceResolver ServiceResolver
 
-	// Enable swagger and/or OpenAPI if these configs are non-nil.
-	openAPIConfig *openapicommon.Config
-
-	// Enable OpenAPI V3 if these configs are non-nil
-	openAPIV3Config *openapicommon.OpenAPIV3Config
-
 	// openAPIAggregationController downloads and merges OpenAPI v2 specs.
 	openAPIAggregationController *openapicontroller.AggregationController
 
 	// openAPIV3AggregationController downloads and caches OpenAPI v3 specs.
 	openAPIV3AggregationController *openapiv3controller.AggregationController
-
 	// discoveryAggregationController downloads and caches discovery documents
 	// from all aggregated apiservices so they are available from /apis endpoint
 	// when discovery with resources are requested
@@ -191,6 +189,7 @@ type APIAggregator struct {
 func (cfg *Config) Complete() CompletedConfig {
 	c := completedConfig{
 		cfg.GenericConfig.Complete(),
+		cfg.MiniAPIAggregagorConfig.Complete(),
 		&cfg.ExtraConfig,
 	}
 
@@ -240,7 +239,13 @@ func (c completedConfig) NewWithDelegate(delegationTarget genericapiserver.Deleg
 		proxyTransportDial = &transport.DialHolder{Dial: c.ExtraConfig.ProxyTransport.DialContext}
 	}
 
+	m, err := c.MiniAPIAggregatorConfig.NewWithDelegate(genericServer)
+	if err != nil {
+		return nil, err
+	}
+
 	s := &APIAggregator{
+		MiniAPIAggregator:          m,
 		GenericAPIServer:           genericServer,
 		delegateHandler:            delegationTarget.UnprotectedHandler(),
 		proxyTransportDial:         proxyTransportDial,
@@ -249,8 +254,6 @@ func (c completedConfig) NewWithDelegate(delegationTarget genericapiserver.Deleg
 		lister:                     informerFactory.Apiregistration().V1().APIServices().Lister(),
 		APIRegistrationInformers:   informerFactory,
 		serviceResolver:            c.ExtraConfig.ServiceResolver,
-		openAPIConfig:              c.GenericConfig.OpenAPIConfig,
-		openAPIV3Config:            c.GenericConfig.OpenAPIV3Config,
 		proxyCurrentCertKeyContent: func() (bytes []byte, bytes2 []byte) { return nil, nil },
 		rejectForwardingRedirects:  c.ExtraConfig.RejectForwardingRedirects,
 		tracerProvider:             c.GenericConfig.TracerProvider,
@@ -464,30 +467,29 @@ func (c completedConfig) NewWithDelegate(delegationTarget genericapiserver.Deleg
 // aggregated discovery document and calling the generic PrepareRun.
 func (s *APIAggregator) PrepareRun() (preparedAPIAggregator, error) {
 	// add post start hook before generic PrepareRun in order to be before /healthz installation
-	if s.openAPIConfig != nil {
+	if s.MiniAPIAggregator != nil && s.MiniAPIAggregator.OpenAPIConfig != nil {
 		s.GenericAPIServer.AddPostStartHookOrDie("apiservice-openapi-controller", func(context genericapiserver.PostStartHookContext) error {
 			go s.openAPIAggregationController.Run(context.Done())
 			return nil
 		})
 	}
 
-	if s.openAPIV3Config != nil {
+	if s.MiniAPIAggregator != nil && s.MiniAPIAggregator.OpenAPIV3Config != nil {
 		s.GenericAPIServer.AddPostStartHookOrDie("apiservice-openapiv3-controller", func(context genericapiserver.PostStartHookContext) error {
 			go s.openAPIV3AggregationController.Run(context.Done())
 			return nil
 		})
 	}
-
 	prepared := s.GenericAPIServer.PrepareRun()
 
 	// delay OpenAPI setup until the delegate had a chance to setup their OpenAPI handlers
-	if s.openAPIConfig != nil {
+	if s.MiniAPIAggregator != nil && s.MiniAPIAggregator.OpenAPIConfig != nil {
 		specDownloader := openapiaggregator.NewDownloader()
 		openAPIAggregator, err := openapiaggregator.BuildAndRegisterAggregator(
 			&specDownloader,
 			s.GenericAPIServer.NextDelegate(),
 			s.GenericAPIServer.Handler.GoRestfulContainer.RegisteredWebServices(),
-			s.openAPIConfig,
+			s.MiniAPIAggregator.OpenAPIConfig,
 			s.GenericAPIServer.Handler.NonGoRestfulMux)
 		if err != nil {
 			return preparedAPIAggregator{}, err
@@ -495,13 +497,13 @@ func (s *APIAggregator) PrepareRun() (preparedAPIAggregator, error) {
 		s.openAPIAggregationController = openapicontroller.NewAggregationController(&specDownloader, openAPIAggregator)
 	}
 
-	if s.openAPIV3Config != nil {
+	if s.MiniAPIAggregator != nil && s.MiniAPIAggregator.OpenAPIV3Config != nil {
 		specDownloaderV3 := openapiv3aggregator.NewDownloader()
 		openAPIV3Aggregator, err := openapiv3aggregator.BuildAndRegisterAggregator(
 			specDownloaderV3,
 			s.GenericAPIServer.NextDelegate(),
 			s.GenericAPIServer.Handler.GoRestfulContainer,
-			s.openAPIV3Config,
+			s.MiniAPIAggregator.OpenAPIV3Config,
 			s.GenericAPIServer.Handler.NonGoRestfulMux)
 		if err != nil {
 			return preparedAPIAggregator{}, err

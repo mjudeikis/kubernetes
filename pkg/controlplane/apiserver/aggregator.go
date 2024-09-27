@@ -40,6 +40,7 @@ import (
 	v1helper "k8s.io/kube-aggregator/pkg/apis/apiregistration/v1/helper"
 	"k8s.io/kube-aggregator/pkg/apis/apiregistration/v1beta1"
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
+	"k8s.io/kube-aggregator/pkg/apiserver/miniaggregator"
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
 	apiregistrationclient "k8s.io/kube-aggregator/pkg/client/clientset_generated/clientset/typed/apiregistration/v1"
 	informers "k8s.io/kube-aggregator/pkg/client/informers/externalversions/apiregistration/v1"
@@ -108,6 +109,12 @@ func CreateAggregatorConfig(
 		GenericConfig: &genericapiserver.RecommendedConfig{
 			Config:                genericConfig,
 			SharedInformerFactory: externalInformers,
+		},
+		MiniAPIAggregagorConfig: &miniaggregator.Config{
+			GenericConfig: &genericapiserver.RecommendedConfig{
+				Config:                genericConfig,
+				SharedInformerFactory: externalInformers,
+			},
 		},
 		ExtraConfig: aggregatorapiserver.ExtraConfig{
 			ProxyClientCertFile:       commandOptions.ProxyClientCertFile,
