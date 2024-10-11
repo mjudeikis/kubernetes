@@ -27,7 +27,7 @@ import (
 	"k8s.io/apiserver/pkg/util/webhook"
 	externalinformers "k8s.io/client-go/informers"
 	"k8s.io/client-go/rest"
-	"k8s.io/kubernetes/pkg/kubeapiserver/admission/exclusion"
+	"k8s.io/kube-apiserver/pkg/admission/exclusion"
 	quotainstall "k8s.io/kubernetes/pkg/quota/v1/install"
 )
 

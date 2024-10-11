@@ -26,13 +26,13 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/sets"
+	"k8s.io/apiserver/pkg/registry/core/service/allocator"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	runtimeapi "k8s.io/cri-api/pkg/apis/runtime/v1"
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/features"
 	kubecontainer "k8s.io/kubernetes/pkg/kubelet/container"
 	utilstore "k8s.io/kubernetes/pkg/kubelet/util/store"
-	"k8s.io/kubernetes/pkg/registry/core/service/allocator"
 	utilfs "k8s.io/kubernetes/pkg/util/filesystem"
 )
 

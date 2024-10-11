@@ -29,9 +29,9 @@ import (
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/apiserver/pkg/authentication/user"
 	"k8s.io/apiserver/pkg/authorization/authorizer"
+	rbacregistryvalidation "k8s.io/apiserver/pkg/registry/rbac/validation"
 	rbaclisters "k8s.io/client-go/listers/rbac/v1"
 	rbacv1helpers "k8s.io/kubernetes/pkg/apis/rbac/v1"
-	rbacregistryvalidation "k8s.io/kubernetes/pkg/registry/rbac/validation"
 )
 
 type RequestToRuleMapper interface {

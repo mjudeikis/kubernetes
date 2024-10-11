@@ -28,7 +28,7 @@ import (
 
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/apimachinery/pkg/util/wait"
-	"k8s.io/kubernetes/pkg/kubeapiserver/authorizer/modes"
+	"k8s.io/kube-apiserver/pkg/authorizer/modes"
 )
 
 func TestAuthzValidate(t *testing.T) {

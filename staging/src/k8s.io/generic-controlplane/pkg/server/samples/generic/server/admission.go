@@ -23,7 +23,7 @@ import (
 	"k8s.io/apiserver/pkg/admission/plugin/resourcequota"
 	mutatingwebhook "k8s.io/apiserver/pkg/admission/plugin/webhook/mutating"
 	validatingwebhook "k8s.io/apiserver/pkg/admission/plugin/webhook/validating"
-	"k8s.io/kubernetes/pkg/kubeapiserver/options"
+	"k8s.io/kube-apiserver/pkg/options"
 	certapproval "k8s.io/kubernetes/plugin/pkg/admission/certificates/approval"
 	"k8s.io/kubernetes/plugin/pkg/admission/certificates/ctbattest"
 	certsigning "k8s.io/kubernetes/plugin/pkg/admission/certificates/signing"

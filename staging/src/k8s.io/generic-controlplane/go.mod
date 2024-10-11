@@ -214,6 +214,7 @@ require (
 	k8s.io/gengo/v2 v2.0.0-20240911193312-2b36238f13e9 // indirect
 	k8s.io/kms v0.0.0
 	k8s.io/kube-aggregator v0.0.0
+	k8s.io/kube-apiserver v0.0.0
 	k8s.io/kube-controller-manager v0.0.0
 	k8s.io/kube-proxy v0.0.0
 	k8s.io/kube-scheduler v0.0.0

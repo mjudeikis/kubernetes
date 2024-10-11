@@ -51,13 +51,13 @@ import (
 	openapicommon "k8s.io/kube-openapi/pkg/common"
 
 	"k8s.io/api/legacyscheme"
+	rbacrest "k8s.io/apiserver/pkg/registry/rbac/rest"
 	"k8s.io/generic-controlplane/pkg/controller/clusterauthenticationtrust"
 	controlplaneadmission "k8s.io/generic-controlplane/pkg/server/admission"
 	"k8s.io/generic-controlplane/pkg/server/options"
+	"k8s.io/kube-apiserver/pkg/authorizer/modes"
+	"k8s.io/kube-apiserver/pkg/kubeapiserver"
 	"k8s.io/kubernetes/pkg/features"
-	"k8s.io/kubernetes/pkg/kubeapiserver"
-	"k8s.io/kubernetes/pkg/kubeapiserver/authorizer/modes"
-	rbacrest "k8s.io/kubernetes/pkg/registry/rbac/rest"
 	"k8s.io/kubernetes/pkg/serviceaccount"
 )
 

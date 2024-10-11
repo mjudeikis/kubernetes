@@ -30,12 +30,12 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/managedfields"
+	deploymentstorage "k8s.io/apiserver/pkg/registry/apps/deployment/storage"
+	replicasetstorage "k8s.io/apiserver/pkg/registry/apps/replicaset/storage"
+	statefulsetstorage "k8s.io/apiserver/pkg/registry/apps/statefulset/storage"
+	replicationcontrollerstorage "k8s.io/apiserver/pkg/registry/core/replicationcontroller/storage"
 	clientset "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
-	deploymentstorage "k8s.io/kubernetes/pkg/registry/apps/deployment/storage"
-	replicasetstorage "k8s.io/kubernetes/pkg/registry/apps/replicaset/storage"
-	statefulsetstorage "k8s.io/kubernetes/pkg/registry/apps/statefulset/storage"
-	replicationcontrollerstorage "k8s.io/kubernetes/pkg/registry/core/replicationcontroller/storage"
 )
 
 type scaleTest struct {
