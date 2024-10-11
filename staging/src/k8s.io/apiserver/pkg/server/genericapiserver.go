@@ -307,7 +307,7 @@ type DelegationTarget interface {
 	NextDelegate() DelegationTarget
 
 	// PrepareRun does post API installation setup steps. It calls recursively the same function of the delegates.
-	PrepareRun() preparedGenericAPIServer
+	PrepareRun() PreparedGenericAPIServer
 
 	// MuxAndDiscoveryCompleteSignals exposes registered signals that indicate if all known HTTP paths have been installed.
 	MuxAndDiscoveryCompleteSignals() map[string]<-chan struct{}
@@ -404,8 +404,8 @@ func (s emptyDelegate) ListedPaths() []string {
 func (s emptyDelegate) NextDelegate() DelegationTarget {
 	return nil
 }
-func (s emptyDelegate) PrepareRun() preparedGenericAPIServer {
-	return preparedGenericAPIServer{nil}
+func (s emptyDelegate) PrepareRun() PreparedGenericAPIServer {
+	return PreparedGenericAPIServer{nil}
 }
 func (s emptyDelegate) MuxAndDiscoveryCompleteSignals() map[string]<-chan struct{} {
 	return map[string]<-chan struct{}{}
@@ -413,13 +413,13 @@ func (s emptyDelegate) MuxAndDiscoveryCompleteSignals() map[string]<-chan struct
 func (s emptyDelegate) Destroy() {
 }
 
-// preparedGenericAPIServer is a private wrapper that enforces a call of PrepareRun() before Run can be invoked.
-type preparedGenericAPIServer struct {
+// PreparedGenericAPIServer is a private wrapper that enforces a call of PrepareRun() before Run can be invoked.
+type PreparedGenericAPIServer struct {
 	*GenericAPIServer
 }
 
 // PrepareRun does post API installation setup steps. It calls recursively the same function of the delegates.
-func (s *GenericAPIServer) PrepareRun() preparedGenericAPIServer {
+func (s *GenericAPIServer) PrepareRun() PreparedGenericAPIServer {
 	s.delegationTarget.PrepareRun()
 
 	if s.openAPIConfig != nil && !s.skipOpenAPIInstallation {
@@ -445,7 +445,7 @@ func (s *GenericAPIServer) PrepareRun() preparedGenericAPIServer {
 	}
 	s.installReadyz()
 
-	return preparedGenericAPIServer{s}
+	return PreparedGenericAPIServer{s}
 }
 
 // Run spawns the secure http server. It only returns if stopCh is closed
@@ -453,7 +453,7 @@ func (s *GenericAPIServer) PrepareRun() preparedGenericAPIServer {
 //
 // Deprecated: use RunWithContext instead. Run will not get removed to avoid
 // breaking consumers, but should not be used in new code.
-func (s preparedGenericAPIServer) Run(stopCh <-chan struct{}) error {
+func (s PreparedGenericAPIServer) Run(stopCh <-chan struct{}) error {
 	ctx := wait.ContextForChannel(stopCh)
 	return s.RunWithContext(ctx)
 }
@@ -500,7 +500,7 @@ func (s preparedGenericAPIServer) Run(stopCh <-chan struct{}) error {
 // |                       listenerStoppedCh
 // |                               |
 // |      HTTPServerStoppedListening (httpServerStoppedListeningCh)
-func (s preparedGenericAPIServer) RunWithContext(ctx context.Context) error {
+func (s PreparedGenericAPIServer) RunWithContext(ctx context.Context) error {
 	stopCh := ctx.Done()
 	delayedStopCh := s.lifecycleSignals.AfterShutdownDelayDuration
 	shutdownInitiatedCh := s.lifecycleSignals.ShutdownInitiated
@@ -718,7 +718,7 @@ func (s preparedGenericAPIServer) RunWithContext(ctx context.Context) error {
 //
 // Deprecated: use RunWithContext instead. Run will not get removed to avoid
 // breaking consumers, but should not be used in new code.
-func (s preparedGenericAPIServer) NonBlockingRun(stopCh <-chan struct{}, shutdownTimeout time.Duration) (<-chan struct{}, <-chan struct{}, error) {
+func (s PreparedGenericAPIServer) NonBlockingRun(stopCh <-chan struct{}, shutdownTimeout time.Duration) (<-chan struct{}, <-chan struct{}, error) {
 	ctx := wait.ContextForChannel(stopCh)
 	return s.NonBlockingRunWithContext(ctx, shutdownTimeout)
 }
@@ -726,7 +726,7 @@ func (s preparedGenericAPIServer) NonBlockingRun(stopCh <-chan struct{}, shutdow
 // NonBlockingRunWithContext spawns the secure http server. An error is
 // returned if the secure port cannot be listened on.
 // The returned channel is closed when the (asynchronous) termination is finished.
-func (s preparedGenericAPIServer) NonBlockingRunWithContext(ctx context.Context, shutdownTimeout time.Duration) (<-chan struct{}, <-chan struct{}, error) {
+func (s PreparedGenericAPIServer) NonBlockingRunWithContext(ctx context.Context, shutdownTimeout time.Duration) (<-chan struct{}, <-chan struct{}, error) {
 	// Use an internal stop channel to allow cleanup of the listeners on error.
 	internalStopCh := make(chan struct{})
 	var stoppedCh <-chan struct{}

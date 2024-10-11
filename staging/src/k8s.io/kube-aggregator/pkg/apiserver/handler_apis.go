@@ -25,6 +25,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/apimachinery/pkg/util/sets"
+	"k8s.io/apiserver/pkg/endpoints/discovery"
 	"k8s.io/apiserver/pkg/endpoints/handlers/negotiation"
 	"k8s.io/apiserver/pkg/endpoints/handlers/responsewriters"
 
@@ -40,6 +41,8 @@ type apisHandler struct {
 	codecs         serializer.CodecFactory
 	lister         listers.APIServiceLister
 	discoveryGroup metav1.APIGroup
+
+	discovery.GroupLister
 }
 
 func discoveryGroup(enabledVersions sets.String) metav1.APIGroup {
@@ -65,6 +68,10 @@ func discoveryGroup(enabledVersions sets.String) metav1.APIGroup {
 	}
 
 	return retval
+}
+
+func (r *apisHandler) Groups() []metav1.APIGroup {
+	return []metav1.APIGroup{r.discoveryGroup}
 }
 
 func (r *apisHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {

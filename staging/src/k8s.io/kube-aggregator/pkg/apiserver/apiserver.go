@@ -56,6 +56,7 @@ import (
 	availabilitymetrics "k8s.io/kube-aggregator/pkg/controllers/status/metrics"
 	remoteavailability "k8s.io/kube-aggregator/pkg/controllers/status/remote"
 	apiservicerest "k8s.io/kube-aggregator/pkg/registry/apiservice/rest"
+	openapicommon "k8s.io/kube-openapi/pkg/common"
 )
 
 // making sure we only register metrics once into legacy registry
@@ -168,6 +169,12 @@ type APIAggregator struct {
 	// Information needed to determine routing for the aggregator
 	serviceResolver ServiceResolver
 
+	// Enable swagger and/or OpenAPI if these configs are non-nil.
+	OpenAPIConfig *openapicommon.Config
+
+	// Enable OpenAPI V3 if these configs are non-nil
+	OpenAPIV3Config *openapicommon.OpenAPIV3Config
+
 	// openAPIAggregationController downloads and merges OpenAPI v2 specs.
 	openAPIAggregationController *openapicontroller.AggregationController
 
@@ -201,7 +208,9 @@ func (cfg *Config) Complete() CompletedConfig {
 }
 
 // NewWithDelegate returns a new instance of APIAggregator from the given config.
-func (c completedConfig) NewWithDelegate(delegationTarget genericapiserver.DelegationTarget) (*APIAggregator, error) {
+func (c completedConfig) NewWithDelegate(
+	delegationTarget genericapiserver.DelegationTarget,
+) (*APIAggregator, error) {
 	genericServer, err := c.GenericConfig.New("kube-aggregator", delegationTarget)
 	if err != nil {
 		return nil, err
@@ -239,13 +248,7 @@ func (c completedConfig) NewWithDelegate(delegationTarget genericapiserver.Deleg
 		proxyTransportDial = &transport.DialHolder{Dial: c.ExtraConfig.ProxyTransport.DialContext}
 	}
 
-	m, err := c.MiniAPIAggregatorConfig.NewWithDelegate(genericServer)
-	if err != nil {
-		return nil, err
-	}
-
 	s := &APIAggregator{
-		MiniAPIAggregator:          m,
 		GenericAPIServer:           genericServer,
 		delegateHandler:            delegationTarget.UnprotectedHandler(),
 		proxyTransportDial:         proxyTransportDial,
@@ -257,6 +260,8 @@ func (c completedConfig) NewWithDelegate(delegationTarget genericapiserver.Deleg
 		proxyCurrentCertKeyContent: func() (bytes []byte, bytes2 []byte) { return nil, nil },
 		rejectForwardingRedirects:  c.ExtraConfig.RejectForwardingRedirects,
 		tracerProvider:             c.GenericConfig.TracerProvider,
+		OpenAPIConfig:              c.GenericConfig.OpenAPIConfig,
+		OpenAPIV3Config:            c.GenericConfig.OpenAPIV3Config,
 	}
 
 	// used later  to filter the served resource by those that have expired.
@@ -283,6 +288,16 @@ func (c completedConfig) NewWithDelegate(delegationTarget genericapiserver.Deleg
 		lister:         s.lister,
 		discoveryGroup: discoveryGroup(enabledVersions),
 	}
+
+	m, err := c.MiniAPIAggregatorConfig.NewWithDelegate(
+		genericServer,
+		apisHandler.GroupLister,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	s.MiniAPIAggregator = m
 
 	if utilfeature.DefaultFeatureGate.Enabled(genericfeatures.AggregatedDiscoveryEndpoint) {
 		apisHandlerWithAggregationSupport := aggregated.WrapAggregatedDiscoveryToHandler(apisHandler, s.GenericAPIServer.AggregatedDiscoveryGroupManager)
@@ -467,14 +482,14 @@ func (c completedConfig) NewWithDelegate(delegationTarget genericapiserver.Deleg
 // aggregated discovery document and calling the generic PrepareRun.
 func (s *APIAggregator) PrepareRun() (preparedAPIAggregator, error) {
 	// add post start hook before generic PrepareRun in order to be before /healthz installation
-	if s.MiniAPIAggregator != nil && s.MiniAPIAggregator.OpenAPIConfig != nil {
+	if s.OpenAPIConfig != nil {
 		s.GenericAPIServer.AddPostStartHookOrDie("apiservice-openapi-controller", func(context genericapiserver.PostStartHookContext) error {
 			go s.openAPIAggregationController.Run(context.Done())
 			return nil
 		})
 	}
 
-	if s.MiniAPIAggregator != nil && s.MiniAPIAggregator.OpenAPIV3Config != nil {
+	if s.OpenAPIV3Config != nil {
 		s.GenericAPIServer.AddPostStartHookOrDie("apiservice-openapiv3-controller", func(context genericapiserver.PostStartHookContext) error {
 			go s.openAPIV3AggregationController.Run(context.Done())
 			return nil
@@ -483,13 +498,13 @@ func (s *APIAggregator) PrepareRun() (preparedAPIAggregator, error) {
 	prepared := s.GenericAPIServer.PrepareRun()
 
 	// delay OpenAPI setup until the delegate had a chance to setup their OpenAPI handlers
-	if s.MiniAPIAggregator != nil && s.MiniAPIAggregator.OpenAPIConfig != nil {
+	if s.OpenAPIConfig != nil {
 		specDownloader := openapiaggregator.NewDownloader()
 		openAPIAggregator, err := openapiaggregator.BuildAndRegisterAggregator(
 			&specDownloader,
 			s.GenericAPIServer.NextDelegate(),
 			s.GenericAPIServer.Handler.GoRestfulContainer.RegisteredWebServices(),
-			s.MiniAPIAggregator.OpenAPIConfig,
+			s.OpenAPIConfig,
 			s.GenericAPIServer.Handler.NonGoRestfulMux)
 		if err != nil {
 			return preparedAPIAggregator{}, err
@@ -497,13 +512,13 @@ func (s *APIAggregator) PrepareRun() (preparedAPIAggregator, error) {
 		s.openAPIAggregationController = openapicontroller.NewAggregationController(&specDownloader, openAPIAggregator)
 	}
 
-	if s.MiniAPIAggregator != nil && s.MiniAPIAggregator.OpenAPIV3Config != nil {
+	if s.OpenAPIV3Config != nil {
 		specDownloaderV3 := openapiv3aggregator.NewDownloader()
 		openAPIV3Aggregator, err := openapiv3aggregator.BuildAndRegisterAggregator(
 			specDownloaderV3,
 			s.GenericAPIServer.NextDelegate(),
 			s.GenericAPIServer.Handler.GoRestfulContainer,
-			s.MiniAPIAggregator.OpenAPIV3Config,
+			s.OpenAPIV3Config,
 			s.GenericAPIServer.Handler.NonGoRestfulMux)
 		if err != nil {
 			return preparedAPIAggregator{}, err
