@@ -20,7 +20,7 @@ import (
 	"testing"
 
 	"k8s.io/apimachinery/pkg/util/sets"
-	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
+	kubeoptions "k8s.io/kube-apiserver/pkg/options"
 	"k8s.io/kubernetes/plugin/pkg/admission/limitranger"
 	"k8s.io/kubernetes/plugin/pkg/admission/network/defaultingressclass"
 	"k8s.io/kubernetes/plugin/pkg/admission/nodetaint"

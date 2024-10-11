@@ -38,7 +38,7 @@ import (
 	"k8s.io/component-base/featuregate"
 	"k8s.io/component-base/logs"
 	"k8s.io/component-base/metrics"
-	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
+	kubeoptions "k8s.io/kube-apiserver/pkg/options"
 	netutils "k8s.io/utils/net"
 )
 

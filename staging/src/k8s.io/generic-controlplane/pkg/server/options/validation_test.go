@@ -30,7 +30,7 @@ import (
 
 	peerreconcilers "k8s.io/apiserver/pkg/reconcilers"
 	featuregatetesting "k8s.io/component-base/featuregate/testing"
-	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
+	kubeoptions "k8s.io/kube-apiserver/pkg/options"
 )
 
 func TestValidateAPIPriorityAndFairness(t *testing.T) {

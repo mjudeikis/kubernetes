@@ -41,8 +41,8 @@ import (
 	"k8s.io/component-base/metrics"
 	"k8s.io/generic-controlplane/pkg/reconcilers"
 	controlplaneapiserver "k8s.io/generic-controlplane/pkg/server/options"
+	kubeoptions "k8s.io/kube-apiserver/pkg/options"
 	kapi "k8s.io/kubernetes/pkg/apis/core"
-	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
 	kubeletclient "k8s.io/kubernetes/pkg/kubelet/client"
 	netutils "k8s.io/utils/net"
 )

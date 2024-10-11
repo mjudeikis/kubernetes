@@ -42,9 +42,9 @@ import (
 	"k8s.io/client-go/kubernetes/fake"
 	"k8s.io/component-base/featuregate"
 	featuregatetesting "k8s.io/component-base/featuregate/testing"
+	kubeauthenticator "k8s.io/kube-apiserver/pkg/authenticator"
 	openapicommon "k8s.io/kube-openapi/pkg/common"
 	kubefeatures "k8s.io/kubernetes/pkg/features"
-	kubeauthenticator "k8s.io/kubernetes/pkg/kubeapiserver/authenticator"
 	"k8s.io/kubernetes/pkg/serviceaccount"
 	"k8s.io/utils/pointer"
 )

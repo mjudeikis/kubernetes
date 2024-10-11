@@ -33,8 +33,8 @@ import (
 	genericoptions "k8s.io/apiserver/pkg/server/options"
 	versionedinformers "k8s.io/client-go/informers"
 
-	"k8s.io/kubernetes/pkg/kubeapiserver/authorizer"
-	authzmodes "k8s.io/kubernetes/pkg/kubeapiserver/authorizer/modes"
+	"k8s.io/kube-apiserver/pkg/authorizer"
+	authzmodes "k8s.io/kube-apiserver/pkg/authorizer/modes"
 )
 
 const (

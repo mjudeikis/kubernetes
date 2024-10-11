@@ -36,8 +36,8 @@ import (
 	"k8s.io/klog/v2"
 	netutil "k8s.io/utils/net"
 
+	kubeoptions "k8s.io/kube-apiserver/pkg/options"
 	_ "k8s.io/kubernetes/pkg/features"
-	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
 	"k8s.io/kubernetes/pkg/serviceaccount"
 )
 

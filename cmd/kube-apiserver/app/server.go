@@ -53,9 +53,9 @@ import (
 	controlplaneapiserver "k8s.io/generic-controlplane/pkg/server"
 	"k8s.io/klog/v2"
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
+	kubeapiserveradmission "k8s.io/kube-apiserver/pkg/admission"
 	"k8s.io/kubernetes/cmd/kube-apiserver/app/options"
 	"k8s.io/kubernetes/pkg/capabilities"
-	kubeapiserveradmission "k8s.io/kubernetes/pkg/kubeapiserver/admission"
 )
 
 func init() {

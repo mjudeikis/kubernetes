@@ -70,13 +70,13 @@ import (
 	"k8s.io/generic-controlplane/pkg/server"
 	"k8s.io/generic-controlplane/pkg/server/options"
 	"k8s.io/klog/v2"
+	kubeoptions "k8s.io/kube-apiserver/pkg/options"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	flowcontrolv1 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1"
 	flowcontrolv1beta1 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1beta1"
 	flowcontrolv1beta2 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1beta2"
 	flowcontrolv1beta3 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1beta3"
 	"k8s.io/kubernetes/pkg/features"
-	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
 	kubeletclient "k8s.io/kubernetes/pkg/kubelet/client"
 
 	// RESTStorage installers

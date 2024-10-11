@@ -28,10 +28,10 @@ import (
 
 	"k8s.io/generic-controlplane/pkg/reconcilers"
 	controlplaneapiserver "k8s.io/generic-controlplane/pkg/server/options"
+	kubeoptions "k8s.io/kube-apiserver/pkg/options"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	"k8s.io/kubernetes/pkg/cluster/ports"
 	_ "k8s.io/kubernetes/pkg/features" // add the kubernetes feature gates
-	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
 	kubeletclient "k8s.io/kubernetes/pkg/kubelet/client"
 )
 
