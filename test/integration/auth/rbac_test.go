@@ -51,6 +51,7 @@ import (
 	rolestore "k8s.io/apiserver/pkg/registry/rbac/role/storage"
 	"k8s.io/apiserver/pkg/registry/rbac/rolebinding"
 	rolebindingstore "k8s.io/apiserver/pkg/registry/rbac/rolebinding/storage"
+	"k8s.io/apiserver/plugin/pkg/authorizer/rbac"
 	clientset "k8s.io/client-go/kubernetes"
 	restclient "k8s.io/client-go/rest"
 	watchtools "k8s.io/client-go/tools/watch"
@@ -59,7 +60,6 @@ import (
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/cmd/kube-apiserver/app/options"
 	rbachelper "k8s.io/kubernetes/pkg/apis/rbac/v1"
-	"k8s.io/kubernetes/plugin/pkg/auth/authorizer/rbac"
 	"k8s.io/kubernetes/test/integration/framework"
 	"k8s.io/kubernetes/test/utils/ktesting"
 )

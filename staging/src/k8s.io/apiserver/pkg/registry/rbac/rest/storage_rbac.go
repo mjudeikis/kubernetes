@@ -48,12 +48,12 @@ import (
 	"k8s.io/apiserver/pkg/registry/rest"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	serverstorage "k8s.io/apiserver/pkg/server/storage"
+	"k8s.io/apiserver/plugin/pkg/authorizer/rbac/bootstrappolicy"
 	clientset "k8s.io/client-go/kubernetes"
 	rbacv1client "k8s.io/client-go/kubernetes/typed/rbac/v1"
 	"k8s.io/client-go/util/retry"
 	"k8s.io/component-helpers/auth/rbac/reconciliation"
 	"k8s.io/kubernetes/pkg/apis/rbac"
-	"k8s.io/kubernetes/plugin/pkg/auth/authorizer/rbac/bootstrappolicy"
 )
 
 const PostStartHookName = "rbac/bootstrap-roles"

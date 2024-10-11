@@ -37,14 +37,14 @@ import (
 	"k8s.io/apiserver/pkg/authorization/union"
 	"k8s.io/apiserver/pkg/server/options/authorizationconfig/metrics"
 	webhookutil "k8s.io/apiserver/pkg/util/webhook"
+	"k8s.io/apiserver/plugin/pkg/authorizer/node"
+	"k8s.io/apiserver/plugin/pkg/authorizer/rbac"
 	"k8s.io/apiserver/plugin/pkg/authorizer/webhook"
 	webhookmetrics "k8s.io/apiserver/plugin/pkg/authorizer/webhook/metrics"
 	"k8s.io/klog/v2"
 	"k8s.io/kube-apiserver/pkg/authorizer/modes"
 	"k8s.io/kubernetes/pkg/auth/authorizer/abac"
 	"k8s.io/kubernetes/pkg/util/filesystem"
-	"k8s.io/kubernetes/plugin/pkg/auth/authorizer/node"
-	"k8s.io/kubernetes/plugin/pkg/auth/authorizer/rbac"
 )
 
 type reloadableAuthorizerResolver struct {

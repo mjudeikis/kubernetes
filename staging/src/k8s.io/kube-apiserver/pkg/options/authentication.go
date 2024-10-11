@@ -45,6 +45,7 @@ import (
 	genericoptions "k8s.io/apiserver/pkg/server/options"
 	authenticationconfigmetrics "k8s.io/apiserver/pkg/server/options/authenticationconfig/metrics"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
+	"k8s.io/apiserver/plugin/pkg/authenticator/token/bootstrap"
 	"k8s.io/apiserver/plugin/pkg/authenticator/token/oidc"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
@@ -59,7 +60,6 @@ import (
 	"k8s.io/kubernetes/pkg/features"
 	"k8s.io/kubernetes/pkg/serviceaccount"
 	"k8s.io/kubernetes/pkg/util/filesystem"
-	"k8s.io/kubernetes/plugin/pkg/auth/authenticator/token/bootstrap"
 	"k8s.io/utils/pointer"
 )
 

@@ -32,15 +32,15 @@ import (
 	"k8s.io/apiserver/pkg/apis/apiserver/validation"
 	"k8s.io/apiserver/pkg/authorization/authorizer"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
+	"k8s.io/apiserver/plugin/pkg/authorizer/node"
+	"k8s.io/apiserver/plugin/pkg/authorizer/rbac"
+	"k8s.io/apiserver/plugin/pkg/authorizer/rbac/bootstrappolicy"
 	versionedinformers "k8s.io/client-go/informers"
 	resourceinformers "k8s.io/client-go/informers/resource/v1alpha3"
 	"k8s.io/kube-apiserver/pkg/authorizer/modes"
 	"k8s.io/kubernetes/pkg/auth/authorizer/abac"
 	"k8s.io/kubernetes/pkg/auth/nodeidentifier"
 	"k8s.io/kubernetes/pkg/features"
-	"k8s.io/kubernetes/plugin/pkg/auth/authorizer/node"
-	"k8s.io/kubernetes/plugin/pkg/auth/authorizer/rbac"
-	"k8s.io/kubernetes/plugin/pkg/auth/authorizer/rbac/bootstrappolicy"
 )
 
 // Config contains the data on how to authorize a request to the Kube API Server
