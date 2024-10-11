@@ -5,7 +5,7 @@ import (
 	"sort"
 	"testing"
 
-	"k8s.io/kubernetes/third_party/forked/gonum/graph"
+	"k8s.io/apimachinery/third_party/forked/gonum/graph"
 )
 
 func TestEdgeHolder(t *testing.T) {

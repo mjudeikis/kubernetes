@@ -25,6 +25,8 @@ import (
 	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/selection"
+	"k8s.io/apimachinery/third_party/forked/gonum/graph"
+	"k8s.io/apimachinery/third_party/forked/gonum/graph/traverse"
 	"k8s.io/apiserver/pkg/authentication/user"
 	"k8s.io/apiserver/pkg/authorization/authorizer"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
@@ -36,8 +38,6 @@ import (
 	"k8s.io/kubernetes/pkg/auth/nodeidentifier"
 	"k8s.io/kubernetes/pkg/features"
 	"k8s.io/kubernetes/plugin/pkg/auth/authorizer/rbac"
-	"k8s.io/kubernetes/third_party/forked/gonum/graph"
-	"k8s.io/kubernetes/third_party/forked/gonum/graph/traverse"
 )
 
 // NodeAuthorizer authorizes requests from kubelets, with the following logic:

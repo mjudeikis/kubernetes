@@ -1,7 +1,7 @@
 package simple
 
 import (
-	"k8s.io/kubernetes/third_party/forked/gonum/graph"
+	"k8s.io/apimachinery/third_party/forked/gonum/graph"
 )
 
 // DirectedAcyclicGraph implements graph.Directed using UndirectedGraph,

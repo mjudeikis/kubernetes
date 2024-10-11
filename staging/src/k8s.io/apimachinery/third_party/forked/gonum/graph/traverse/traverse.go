@@ -8,8 +8,8 @@ package traverse
 import (
 	"golang.org/x/tools/container/intsets"
 
-	"k8s.io/kubernetes/third_party/forked/gonum/graph"
-	"k8s.io/kubernetes/third_party/forked/gonum/graph/internal/linear"
+	"k8s.io/apimachinery/third_party/forked/gonum/graph"
+	"k8s.io/apimachinery/third_party/forked/gonum/graph/internal/linear"
 )
 
 // BreadthFirst implements stateful breadth-first graph traversal.

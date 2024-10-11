@@ -6,7 +6,7 @@
 package linear
 
 import (
-	"k8s.io/kubernetes/third_party/forked/gonum/graph"
+	"k8s.io/apimachinery/third_party/forked/gonum/graph"
 )
 
 // NodeStack implements a LIFO stack of graph.Node.
