@@ -23,6 +23,7 @@ import (
 	"time"
 
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/api/legacyscheme"
 	networkingv1beta1 "k8s.io/api/networking/v1beta1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -40,7 +41,6 @@ import (
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/generic-controlplane/pkg/controller/defaultservicecidr"
 	"k8s.io/klog/v2"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/api/servicecidr"
 	"k8s.io/kubernetes/pkg/apis/core/v1/helper"
 	"k8s.io/kubernetes/pkg/registry/core/service/ipallocator"

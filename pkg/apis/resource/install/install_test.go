@@ -21,11 +21,11 @@ import (
 	"reflect"
 	"testing"
 
+	"k8s.io/api/legacyscheme"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	internal "k8s.io/kubernetes/pkg/apis/resource"
 )
 

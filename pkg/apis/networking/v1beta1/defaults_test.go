@@ -20,10 +20,10 @@ import (
 	"reflect"
 	"testing"
 
+	"k8s.io/api/legacyscheme"
 	networkingv1beta1 "k8s.io/api/networking/v1beta1"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	_ "k8s.io/kubernetes/pkg/apis/networking/install"
 	. "k8s.io/kubernetes/pkg/apis/networking/v1beta1"
 )

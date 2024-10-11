@@ -40,6 +40,7 @@ import (
 	"k8s.io/utils/pointer"
 
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/api/legacyscheme"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/api/meta/testrestmapper"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -61,7 +62,6 @@ import (
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/controller-manager/pkg/informerfactory"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	c "k8s.io/kubernetes/pkg/controller"
 	"k8s.io/kubernetes/test/utils/ktesting"
 )

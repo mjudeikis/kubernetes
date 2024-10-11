@@ -20,13 +20,13 @@ import (
 	"net"
 	"testing"
 
+	"k8s.io/api/legacyscheme"
 	extensionsapiserver "k8s.io/apiextensions-apiserver/pkg/apiserver"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	apiserveroptions "k8s.io/apiserver/pkg/server/options"
 	"k8s.io/generic-controlplane/pkg/server/options"
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	generatedopenapi "k8s.io/kubernetes/pkg/generated/openapi"
 	netutils "k8s.io/utils/net"
 )

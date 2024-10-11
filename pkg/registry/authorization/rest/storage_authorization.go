@@ -18,12 +18,12 @@ package rest
 
 import (
 	authorizationv1 "k8s.io/api/authorization/v1"
+	"k8s.io/api/legacyscheme"
 	"k8s.io/apiserver/pkg/authorization/authorizer"
 	"k8s.io/apiserver/pkg/registry/generic"
 	"k8s.io/apiserver/pkg/registry/rest"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	serverstorage "k8s.io/apiserver/pkg/server/storage"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/apis/authorization"
 	"k8s.io/kubernetes/pkg/registry/authorization/localsubjectaccessreview"
 	"k8s.io/kubernetes/pkg/registry/authorization/selfsubjectaccessreview"

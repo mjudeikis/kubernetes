@@ -23,10 +23,10 @@ import (
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
 
+	"k8s.io/api/legacyscheme"
 	controlplaneinstance "k8s.io/generic-controlplane/pkg/controlplane"
 	controlplaneserver "k8s.io/generic-controlplane/pkg/server"
 	"k8s.io/generic-controlplane/pkg/server/options"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	generatedopenapi "k8s.io/kubernetes/pkg/generated/openapi"
 )
 

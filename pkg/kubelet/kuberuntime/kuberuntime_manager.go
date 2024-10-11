@@ -46,7 +46,7 @@ import (
 	internalapi "k8s.io/cri-api/pkg/apis"
 	runtimeapi "k8s.io/cri-api/pkg/apis/runtime/v1"
 
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
+	"k8s.io/api/legacyscheme"
 	podutil "k8s.io/kubernetes/pkg/api/v1/pod"
 	"k8s.io/kubernetes/pkg/credentialprovider"
 	"k8s.io/kubernetes/pkg/credentialprovider/plugin"

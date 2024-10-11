@@ -25,6 +25,7 @@ import (
 	fuzz "github.com/google/gofuzz"
 
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/api/legacyscheme"
 	"k8s.io/apimachinery/pkg/api/apitesting/fuzzer"
 	"k8s.io/apimachinery/pkg/api/apitesting/roundtrip"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
@@ -35,7 +36,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/json"
 	"k8s.io/apimachinery/pkg/util/sets"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	api "k8s.io/kubernetes/pkg/apis/core"
 )
 

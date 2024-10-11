@@ -17,12 +17,12 @@ limitations under the License.
 package rest
 
 import (
+	"k8s.io/api/legacyscheme"
 	nodev1 "k8s.io/api/node/v1"
 	"k8s.io/apiserver/pkg/registry/generic"
 	"k8s.io/apiserver/pkg/registry/rest"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	serverstorage "k8s.io/apiserver/pkg/server/storage"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	nodeinternal "k8s.io/kubernetes/pkg/apis/node"
 	runtimeclassstorage "k8s.io/kubernetes/pkg/registry/node/runtimeclass/storage"
 )

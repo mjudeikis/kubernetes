@@ -26,6 +26,7 @@ import (
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/api/legacyscheme"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	utilnet "k8s.io/apimachinery/pkg/util/net"
 	"k8s.io/apiserver/pkg/registry/generic"
@@ -37,7 +38,6 @@ import (
 	networkingv1beta1client "k8s.io/client-go/kubernetes/typed/networking/v1beta1"
 	policyclient "k8s.io/client-go/kubernetes/typed/policy/v1"
 	"k8s.io/klog/v2"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	"k8s.io/kubernetes/pkg/cluster/ports"
 	"k8s.io/kubernetes/pkg/features"

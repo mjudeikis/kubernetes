@@ -26,12 +26,12 @@ import (
 	"sigs.k8s.io/yaml"
 
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/api/legacyscheme"
 	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/component-helpers/auth/rbac/validation"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	_ "k8s.io/kubernetes/pkg/apis/core/install"
 	_ "k8s.io/kubernetes/pkg/apis/rbac/install"

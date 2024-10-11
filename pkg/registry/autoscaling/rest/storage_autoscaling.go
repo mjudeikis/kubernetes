@@ -18,11 +18,11 @@ package rest
 
 import (
 	autoscalingapiv1 "k8s.io/api/autoscaling/v1"
+	"k8s.io/api/legacyscheme"
 	"k8s.io/apiserver/pkg/registry/generic"
 	"k8s.io/apiserver/pkg/registry/rest"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	serverstorage "k8s.io/apiserver/pkg/server/storage"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/apis/autoscaling"
 	autoscalingapiv2 "k8s.io/kubernetes/pkg/apis/autoscaling/v2"
 	horizontalpodautoscalerstore "k8s.io/kubernetes/pkg/registry/autoscaling/horizontalpodautoscaler/storage"

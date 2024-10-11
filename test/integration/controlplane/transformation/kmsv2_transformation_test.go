@@ -39,6 +39,7 @@ import (
 	clientv3 "go.etcd.io/etcd/client/v3"
 
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/api/legacyscheme"
 	apiextensionsclientset "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -68,7 +69,6 @@ import (
 	"k8s.io/klog/v2"
 	kmsv2api "k8s.io/kms/apis/v2"
 	kmsv2svc "k8s.io/kms/pkg/service"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	"k8s.io/kubernetes/pkg/kubeapiserver"
 	secretstore "k8s.io/kubernetes/pkg/registry/core/secret/storage"

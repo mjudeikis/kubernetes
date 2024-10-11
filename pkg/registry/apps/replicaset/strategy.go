@@ -24,6 +24,7 @@ import (
 	"strconv"
 
 	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
+	"k8s.io/api/legacyscheme"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	apivalidation "k8s.io/apimachinery/pkg/api/validation"
 	"k8s.io/apimachinery/pkg/fields"
@@ -37,7 +38,6 @@ import (
 	"k8s.io/apiserver/pkg/registry/rest"
 	apistorage "k8s.io/apiserver/pkg/storage"
 	"k8s.io/apiserver/pkg/storage/names"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/api/pod"
 	"k8s.io/kubernetes/pkg/apis/apps"
 	appsvalidation "k8s.io/kubernetes/pkg/apis/apps/validation"

@@ -18,11 +18,11 @@ package rest
 
 import (
 	appsapiv1 "k8s.io/api/apps/v1"
+	"k8s.io/api/legacyscheme"
 	"k8s.io/apiserver/pkg/registry/generic"
 	"k8s.io/apiserver/pkg/registry/rest"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	serverstorage "k8s.io/apiserver/pkg/server/storage"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/apis/apps"
 	controllerrevisionsstore "k8s.io/kubernetes/pkg/registry/apps/controllerrevision/storage"
 	daemonsetstore "k8s.io/kubernetes/pkg/registry/apps/daemonset/storage"

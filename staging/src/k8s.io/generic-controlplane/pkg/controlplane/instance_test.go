@@ -65,10 +65,10 @@ import (
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
 	netutils "k8s.io/utils/net"
 
+	"k8s.io/api/legacyscheme"
 	"k8s.io/generic-controlplane/pkg/reconcilers"
 	genericcontrolplaneserver "k8s.io/generic-controlplane/pkg/server"
 	"k8s.io/generic-controlplane/pkg/storageversionhashdata"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	generatedopenapi "k8s.io/kubernetes/pkg/generated/openapi"
 	"k8s.io/kubernetes/pkg/kubeapiserver"
 	kubeletclient "k8s.io/kubernetes/pkg/kubelet/client"

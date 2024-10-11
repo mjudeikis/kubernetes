@@ -27,7 +27,7 @@ import (
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
 	"k8s.io/kubernetes/pkg/features"
 
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
+	"k8s.io/api/legacyscheme"
 )
 
 func validateTokenRequest(options *Options) []error {

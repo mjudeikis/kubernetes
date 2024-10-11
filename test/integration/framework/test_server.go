@@ -44,7 +44,7 @@ import (
 	controlplaneapiserver "k8s.io/generic-controlplane/pkg/server
 	"k8s.io/kubernetes/cmd/kube-apiserver/app"
 	"k8s.io/kubernetes/cmd/kube-apiserver/app/options"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
+	"k8s.io/api/legacyscheme"
 	generatedopenapi "k8s.io/kubernetes/pkg/generated/openapi"
 	"k8s.io/kubernetes/test/utils"
 )

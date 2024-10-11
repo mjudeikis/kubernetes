@@ -19,11 +19,11 @@ package runtimeclass
 import (
 	"context"
 
+	"k8s.io/api/legacyscheme"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	"k8s.io/apiserver/pkg/registry/rest"
 	"k8s.io/apiserver/pkg/storage/names"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	nodeapi "k8s.io/kubernetes/pkg/api/node"
 	"k8s.io/kubernetes/pkg/apis/node"
 	"k8s.io/kubernetes/pkg/apis/node/validation"

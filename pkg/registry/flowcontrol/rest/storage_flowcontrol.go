@@ -22,6 +22,7 @@ import (
 	"time"
 
 	flowcontrolv1 "k8s.io/api/flowcontrol/v1"
+	"k8s.io/api/legacyscheme"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/wait"
 	flowcontrolbootstrap "k8s.io/apiserver/pkg/apis/flowcontrol/bootstrap"
@@ -34,7 +35,6 @@ import (
 	flowcontrollisters "k8s.io/client-go/listers/flowcontrol/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/klog/v2"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/apis/flowcontrol"
 	flowcontrolapisv1 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1"
 	flowcontrolapisv1beta3 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1beta3"

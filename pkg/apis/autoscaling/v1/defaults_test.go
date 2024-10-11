@@ -22,9 +22,9 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	autoscalingv1 "k8s.io/api/autoscaling/v1"
+	"k8s.io/api/legacyscheme"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/apis/autoscaling"
 	_ "k8s.io/kubernetes/pkg/apis/autoscaling/install"
 	. "k8s.io/kubernetes/pkg/apis/autoscaling/v1"

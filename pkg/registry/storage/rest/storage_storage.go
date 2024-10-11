@@ -17,6 +17,7 @@ limitations under the License.
 package rest
 
 import (
+	"k8s.io/api/legacyscheme"
 	storageapiv1 "k8s.io/api/storage/v1"
 	storageapiv1alpha1 "k8s.io/api/storage/v1alpha1"
 	storageapiv1beta1 "k8s.io/api/storage/v1beta1"
@@ -24,7 +25,6 @@ import (
 	"k8s.io/apiserver/pkg/registry/rest"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	serverstorage "k8s.io/apiserver/pkg/server/storage"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	storageapi "k8s.io/kubernetes/pkg/apis/storage"
 	csidriverstore "k8s.io/kubernetes/pkg/registry/storage/csidriver/storage"
 	csinodestore "k8s.io/kubernetes/pkg/registry/storage/csinode/storage"

@@ -21,9 +21,9 @@ import (
 	"testing"
 
 	apiv1 "k8s.io/api/core/v1"
+	"k8s.io/api/legacyscheme"
 	v1 "k8s.io/api/scheduling/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 
 	// ensure types are installed
 	_ "k8s.io/kubernetes/pkg/apis/scheduling/install"

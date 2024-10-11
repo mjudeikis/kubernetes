@@ -29,7 +29,7 @@ import (
 	"k8s.io/apiserver/pkg/storage/names"
 	"sigs.k8s.io/structured-merge-diff/v4/fieldpath"
 
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
+	"k8s.io/api/legacyscheme"
 	pvcutil "k8s.io/kubernetes/pkg/api/persistentvolumeclaim"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	"k8s.io/kubernetes/pkg/apis/core/validation"

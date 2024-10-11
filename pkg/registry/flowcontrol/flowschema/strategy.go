@@ -19,11 +19,11 @@ package flowschema
 import (
 	"context"
 
+	"k8s.io/api/legacyscheme"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	"k8s.io/apiserver/pkg/storage/names"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/apis/flowcontrol"
 	"k8s.io/kubernetes/pkg/apis/flowcontrol/validation"
 	"sigs.k8s.io/structured-merge-diff/v4/fieldpath"

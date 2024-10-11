@@ -22,6 +22,7 @@ import (
 	"strconv"
 
 	batchv1 "k8s.io/api/batch/v1"
+	"k8s.io/api/legacyscheme"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	metav1validation "k8s.io/apimachinery/pkg/apis/meta/v1/validation"
@@ -38,7 +39,6 @@ import (
 	"k8s.io/apiserver/pkg/storage/names"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	"k8s.io/kubernetes/pkg/api/job"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/api/pod"
 	"k8s.io/kubernetes/pkg/apis/batch"
 	batchvalidation "k8s.io/kubernetes/pkg/apis/batch/validation"

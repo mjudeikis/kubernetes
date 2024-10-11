@@ -21,6 +21,7 @@ import (
 	"crypto/tls"
 	"fmt"
 
+	"k8s.io/api/legacyscheme"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -29,7 +30,6 @@ import (
 	"k8s.io/apiserver/pkg/registry/rest"
 	pkgstorage "k8s.io/apiserver/pkg/storage"
 	"k8s.io/apiserver/pkg/storage/names"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	"k8s.io/kubernetes/pkg/apis/core/validation"
 )

@@ -17,10 +17,10 @@ limitations under the License.
 package rest
 
 import (
+	"k8s.io/api/legacyscheme"
 	"k8s.io/apiserver/pkg/registry/generic"
 	"k8s.io/apiserver/pkg/registry/rest"
 	"k8s.io/klog/v2"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/apis/storagemigration"
 	"k8s.io/kubernetes/pkg/features"
 

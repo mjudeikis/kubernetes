@@ -18,11 +18,11 @@ package rest
 
 import (
 	discoveryv1 "k8s.io/api/discovery/v1"
+	"k8s.io/api/legacyscheme"
 	"k8s.io/apiserver/pkg/registry/generic"
 	"k8s.io/apiserver/pkg/registry/rest"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	serverstorage "k8s.io/apiserver/pkg/server/storage"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/apis/discovery"
 	endpointslicestorage "k8s.io/kubernetes/pkg/registry/discovery/endpointslice/storage"
 )

@@ -46,6 +46,7 @@ import (
 	netutils "k8s.io/utils/net"
 
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/api/legacyscheme"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -74,7 +75,6 @@ import (
 	"k8s.io/kubelet/pkg/cri/streaming/portforward"
 	remotecommandserver "k8s.io/kubelet/pkg/cri/streaming/remotecommand"
 	kubelettypes "k8s.io/kubelet/pkg/types"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	"k8s.io/kubernetes/pkg/apis/core/v1/validation"
 	"k8s.io/kubernetes/pkg/features"

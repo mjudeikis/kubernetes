@@ -20,8 +20,8 @@ import (
 	"reflect"
 	"testing"
 
+	"k8s.io/api/legacyscheme"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/assert"

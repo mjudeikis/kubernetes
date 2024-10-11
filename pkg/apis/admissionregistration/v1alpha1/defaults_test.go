@@ -22,10 +22,10 @@ import (
 	"github.com/google/go-cmp/cmp"
 
 	v1alpha1 "k8s.io/api/admissionregistration/v1alpha1"
+	"k8s.io/api/legacyscheme"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	_ "k8s.io/kubernetes/pkg/apis/admissionregistration/install"
 )
 

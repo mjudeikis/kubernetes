@@ -33,7 +33,7 @@ import (
 	"k8s.io/client-go/informers"
 	restclient "k8s.io/client-go/rest"
 
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
+	"k8s.io/api/legacyscheme"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	configmapstore "k8s.io/kubernetes/pkg/registry/core/configmap/storage"
 	eventstore "k8s.io/kubernetes/pkg/registry/core/event/storage"
