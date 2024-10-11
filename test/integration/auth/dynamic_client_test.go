@@ -29,8 +29,8 @@ import (
 	clientset "k8s.io/client-go/kubernetes"
 	restclient "k8s.io/client-go/rest"
 	"k8s.io/controller-manager/pkg/clientbuilder"
+	kubeoptions "k8s.io/kube-apiserver/pkg/options"
 	"k8s.io/kubernetes/cmd/kube-apiserver/app/options"
-	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
 	"k8s.io/kubernetes/test/integration/framework"
 	"k8s.io/kubernetes/test/utils/ktesting"
 )

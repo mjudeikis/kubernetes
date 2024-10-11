@@ -42,9 +42,9 @@ import (
 	featuregatetesting "k8s.io/component-base/featuregate/testing"
 	"k8s.io/utils/ptr"
 
+	authzmodes "k8s.io/kube-apiserver/pkg/authorizer/modes"
 	"k8s.io/kubernetes/cmd/kube-apiserver/app/options"
 	apiservertesting "k8s.io/kubernetes/cmd/kube-apiserver/app/testing"
-	authzmodes "k8s.io/kubernetes/pkg/kubeapiserver/authorizer/modes"
 	"k8s.io/kubernetes/test/integration/authutil"
 	"k8s.io/kubernetes/test/integration/etcd"
 	"k8s.io/kubernetes/test/integration/framework"

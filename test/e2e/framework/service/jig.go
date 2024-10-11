@@ -55,7 +55,7 @@ import (
 // NodePortRange should match whatever the default/configured range is
 var NodePortRange = utilnet.PortRange{Base: 30000, Size: 2768}
 
-// It is copied from "k8s.io/kubernetes/pkg/registry/core/service/portallocator"
+// It is copied from "k8s.io/apiserver/pkg/registry/core/service/portallocator"
 var errAllocated = errors.New("provided port is already allocated")
 
 // TestJig is a test jig to help service testing.

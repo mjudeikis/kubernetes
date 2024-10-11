@@ -48,14 +48,14 @@ import (
 	"k8s.io/component-base/term"
 	"k8s.io/component-base/version"
 	"k8s.io/component-base/version/verflag"
+	controlplane "k8s.io/generic-controlplane/pkg/controlplane"
+	"k8s.io/generic-controlplane/pkg/reconcilers"
+	controlplaneapiserver "k8s.io/generic-controlplane/pkg/server"
 	"k8s.io/klog/v2"
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
+	kubeapiserveradmission "k8s.io/kube-apiserver/pkg/admission"
 	"k8s.io/kubernetes/cmd/kube-apiserver/app/options"
 	"k8s.io/kubernetes/pkg/capabilities"
-	"k8s.io/kubernetes/pkg/controlplane"
-	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
-	"k8s.io/kubernetes/pkg/controlplane/reconcilers"
-	kubeapiserveradmission "k8s.io/kubernetes/pkg/kubeapiserver/admission"
 )
 
 func init() {

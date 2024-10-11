@@ -31,6 +31,7 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apimachinery/pkg/util/wait"
+	"k8s.io/apiserver/pkg/registry/core/service/ipallocator"
 	metav1apply "k8s.io/client-go/applyconfigurations/meta/v1"
 	networkingapiv1beta1apply "k8s.io/client-go/applyconfigurations/networking/v1beta1"
 	networkinginformers "k8s.io/client-go/informers/networking/v1beta1"
@@ -43,7 +44,6 @@ import (
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/api/servicecidr"
-	"k8s.io/kubernetes/pkg/registry/core/service/ipallocator"
 	netutils "k8s.io/utils/net"
 )
 

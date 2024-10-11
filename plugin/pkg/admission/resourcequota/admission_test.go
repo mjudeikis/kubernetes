@@ -36,8 +36,8 @@ import (
 	"k8s.io/client-go/kubernetes/fake"
 	testcore "k8s.io/client-go/testing"
 	"k8s.io/client-go/tools/cache"
+	controlplaneadmission "k8s.io/generic-controlplane/pkg/server/admission"
 	api "k8s.io/kubernetes/pkg/apis/core"
-	controlplaneadmission "k8s.io/kubernetes/pkg/controlplane/apiserver/admission"
 	"k8s.io/kubernetes/pkg/quota/v1/install"
 )
 

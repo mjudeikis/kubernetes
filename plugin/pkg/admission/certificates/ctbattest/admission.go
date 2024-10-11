@@ -24,12 +24,12 @@ import (
 	"k8s.io/apiserver/pkg/admission"
 	genericadmissioninit "k8s.io/apiserver/pkg/admission/initializer"
 	"k8s.io/apiserver/pkg/authorization/authorizer"
+	"k8s.io/apiserver/pkg/registry/rbac"
 	"k8s.io/component-base/featuregate"
 	"k8s.io/klog/v2"
 	api "k8s.io/kubernetes/pkg/apis/certificates"
 	kapihelper "k8s.io/kubernetes/pkg/apis/core/helper"
 	"k8s.io/kubernetes/pkg/features"
-	"k8s.io/kubernetes/pkg/registry/rbac"
 	"k8s.io/kubernetes/plugin/pkg/admission/certificates"
 )
 

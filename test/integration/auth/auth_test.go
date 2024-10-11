@@ -42,6 +42,7 @@ import (
 	"time"
 
 	utiltesting "k8s.io/client-go/util/testing"
+	controlplane "k8s.io/generic-controlplane/pkg/controlplane"
 
 	"github.com/google/go-cmp/cmp"
 
@@ -70,7 +71,6 @@ import (
 	"k8s.io/kubernetes/pkg/apis/autoscaling"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	"k8s.io/kubernetes/pkg/apis/extensions"
-	"k8s.io/kubernetes/pkg/controlplane"
 	"k8s.io/kubernetes/test/integration"
 	"k8s.io/kubernetes/test/integration/authutil"
 	"k8s.io/kubernetes/test/integration/framework"

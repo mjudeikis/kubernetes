@@ -21,7 +21,7 @@ package app
 
 import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
+	controlplaneapiserver "k8s.io/generic-controlplane/pkg/server"
 )
 
 // The proper way to resolve this letting the aggregator know the desired group and version-within-group order of the underlying servers

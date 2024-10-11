@@ -32,7 +32,7 @@ import (
 	"k8s.io/client-go/applyconfigurations"
 	v1mf "k8s.io/client-go/applyconfigurations/core/v1"
 
-	"k8s.io/kubernetes/pkg/api/legacyscheme"
+	"k8s.io/api/legacyscheme"
 	api "k8s.io/kubernetes/pkg/apis/core"
 )
 

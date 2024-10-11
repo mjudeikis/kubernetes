@@ -39,10 +39,9 @@ import (
 	"k8s.io/component-base/featuregate"
 	"k8s.io/component-base/logs"
 	"k8s.io/component-base/metrics"
-	kapi "k8s.io/kubernetes/pkg/apis/core"
-	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver/options"
-	"k8s.io/kubernetes/pkg/controlplane/reconcilers"
-	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
+	"k8s.io/generic-controlplane/pkg/reconcilers"
+	controlplaneapiserver "k8s.io/generic-controlplane/pkg/server/options"
+	kubeoptions "k8s.io/kube-apiserver/pkg/options"
 	kubeletclient "k8s.io/kubernetes/pkg/kubelet/client"
 	netutils "k8s.io/utils/net"
 )

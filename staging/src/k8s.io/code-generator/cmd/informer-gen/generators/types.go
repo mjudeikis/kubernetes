@@ -19,7 +19,7 @@ package generators
 import "k8s.io/gengo/v2/types"
 
 var (
-	apiScheme                   = types.Name{Package: "k8s.io/kubernetes/pkg/api/legacyscheme", Name: "Scheme"}
+	apiScheme                   = types.Name{Package: "k8s.io/api/legacyscheme", Name: "Scheme"}
 	cacheGenericLister          = types.Name{Package: "k8s.io/client-go/tools/cache", Name: "GenericLister"}
 	cacheIndexers               = types.Name{Package: "k8s.io/client-go/tools/cache", Name: "Indexers"}
 	cacheListWatch              = types.Name{Package: "k8s.io/client-go/tools/cache", Name: "ListWatch"}

@@ -26,12 +26,11 @@ import (
 	utilnet "k8s.io/apimachinery/pkg/util/net"
 	cliflag "k8s.io/component-base/cli/flag"
 
-	api "k8s.io/kubernetes/pkg/apis/core"
+	"k8s.io/generic-controlplane/pkg/reconcilers"
+	controlplaneapiserver "k8s.io/generic-controlplane/pkg/server/options"
+	kubeoptions "k8s.io/kube-apiserver/pkg/options"
 	"k8s.io/kubernetes/pkg/cluster/ports"
-	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver/options"
-	"k8s.io/kubernetes/pkg/controlplane/reconcilers"
 	_ "k8s.io/kubernetes/pkg/features" // add the kubernetes feature gates
-	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
 	kubeletclient "k8s.io/kubernetes/pkg/kubelet/client"
 )
 
