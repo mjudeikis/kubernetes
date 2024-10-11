@@ -45,8 +45,8 @@ import (
 	"k8s.io/klog/v2"
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
 
-	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
-	"k8s.io/kubernetes/pkg/controlplane/apiserver/options"
+	controlplaneapiserver "k8s.io/generic-controlplane/pkg/server"
+	"k8s.io/generic-controlplane/pkg/server/options"
 	_ "k8s.io/kubernetes/pkg/features"
 	// add the kubernetes feature gates
 )

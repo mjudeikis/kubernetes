@@ -40,12 +40,11 @@ import (
 	"k8s.io/client-go/util/cert"
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
 	netutils "k8s.io/utils/net"
-
+	controlplane "k8s.io/generic-controlplane/pkg/controlplane"
+	controlplaneapiserver "k8s.io/generic-controlplane/pkg/server
 	"k8s.io/kubernetes/cmd/kube-apiserver/app"
 	"k8s.io/kubernetes/cmd/kube-apiserver/app/options"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
-	"k8s.io/kubernetes/pkg/controlplane"
-	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
 	generatedopenapi "k8s.io/kubernetes/pkg/generated/openapi"
 	"k8s.io/kubernetes/test/utils"
 )

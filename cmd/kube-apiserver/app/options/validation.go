@@ -27,8 +27,8 @@ import (
 	utilversion "k8s.io/apiserver/pkg/util/version"
 	netutils "k8s.io/utils/net"
 
-	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver/options"
-	"k8s.io/kubernetes/pkg/controlplane/reconcilers"
+	"k8s.io/generic-controlplane/pkg/reconcilers"
+	controlplaneapiserver "k8s.io/generic-controlplane/pkg/server/options"
 	"k8s.io/kubernetes/pkg/features"
 )
 

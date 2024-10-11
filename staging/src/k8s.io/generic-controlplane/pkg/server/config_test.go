@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package apiserver
+package server
 
 import (
 	"net"
@@ -24,9 +24,9 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	apiserveroptions "k8s.io/apiserver/pkg/server/options"
+	"k8s.io/generic-controlplane/pkg/server/options"
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
-	"k8s.io/kubernetes/pkg/controlplane/apiserver/options"
 	generatedopenapi "k8s.io/kubernetes/pkg/generated/openapi"
 	netutils "k8s.io/utils/net"
 )

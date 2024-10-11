@@ -20,8 +20,8 @@ import (
 	"testing"
 
 	genericapiserver "k8s.io/apiserver/pkg/server"
-	"k8s.io/kubernetes/pkg/controlplane"
-	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
+	controlplane "k8s.io/generic-controlplane/pkg/controlplane"
+	controlplaneapiserver "k8s.io/generic-controlplane/pkg/server"
 )
 
 // This test references methods that OpenShift uses to customize the apiserver on startup, that

@@ -31,7 +31,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
-	genericcontrolplanetesting "k8s.io/kubernetes/pkg/controlplane/apiserver/samples/generic/server/testing"
+	genericcontrolplanetesting "k8s.io/generic-controlplane/pkg/server/samples/generic/server/testing"
 	"k8s.io/kubernetes/test/integration/etcd"
 	"k8s.io/kubernetes/test/integration/framework"
 )

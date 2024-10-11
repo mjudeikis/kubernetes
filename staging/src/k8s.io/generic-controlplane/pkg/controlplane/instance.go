@@ -64,17 +64,17 @@ import (
 	"k8s.io/client-go/kubernetes"
 	corev1client "k8s.io/client-go/kubernetes/typed/core/v1"
 	discoveryclient "k8s.io/client-go/kubernetes/typed/discovery/v1"
+	"k8s.io/generic-controlplane/pkg/controller/defaultservicecidr"
+	"k8s.io/generic-controlplane/pkg/controller/kubernetesservice"
+	"k8s.io/generic-controlplane/pkg/reconcilers"
+	"k8s.io/generic-controlplane/pkg/server"
+	"k8s.io/generic-controlplane/pkg/server/options"
 	"k8s.io/klog/v2"
 	api "k8s.io/kubernetes/pkg/apis/core"
 	flowcontrolv1 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1"
 	flowcontrolv1beta1 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1beta1"
 	flowcontrolv1beta2 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1beta2"
 	flowcontrolv1beta3 "k8s.io/kubernetes/pkg/apis/flowcontrol/v1beta3"
-	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
-	"k8s.io/kubernetes/pkg/controlplane/apiserver/options"
-	"k8s.io/kubernetes/pkg/controlplane/controller/defaultservicecidr"
-	"k8s.io/kubernetes/pkg/controlplane/controller/kubernetesservice"
-	"k8s.io/kubernetes/pkg/controlplane/reconcilers"
 	"k8s.io/kubernetes/pkg/features"
 	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
 	kubeletclient "k8s.io/kubernetes/pkg/kubelet/client"
@@ -112,8 +112,6 @@ const (
 	// IdentityLeaseComponentLabelKey is used to apply a component label to identity lease objects, indicating:
 	//   1. the lease is an identity lease (different from leader election leases)
 	//   2. which component owns this lease
-	// TODO(sttts): remove this indirection
-	IdentityLeaseComponentLabelKey = controlplaneapiserver.IdentityLeaseComponentLabelKey
 	// KubeAPIServer defines variable used internally when referring to kube-apiserver component
 	KubeAPIServer = "kube-apiserver"
 	// repairLoopInterval defines the interval used to run the Services ClusterIP and NodePort repair loops
@@ -172,12 +170,12 @@ type Extra struct {
 
 // Config defines configuration for the master
 type Config struct {
-	ControlPlane controlplaneapiserver.Config
+	ControlPlane server.Config
 	Extra
 }
 
 type completedConfig struct {
-	ControlPlane controlplaneapiserver.CompletedConfig
+	ControlPlane server.CompletedConfig
 	*Extra
 }
 
@@ -195,7 +193,7 @@ type EndpointReconcilerConfig struct {
 
 // Instance contains state for a Kubernetes cluster api server instance.
 type Instance struct {
-	ControlPlane *controlplaneapiserver.Server
+	ControlPlane *server.Server
 }
 
 func (c *Config) createMasterCountReconciler() reconcilers.EndpointReconciler {
@@ -376,7 +374,7 @@ func (c CompletedConfig) New(delegationTarget genericapiserver.DelegationTarget)
 
 }
 
-func (c CompletedConfig) StorageProviders(discovery clientdiscovery.DiscoveryInterface) ([]controlplaneapiserver.RESTStorageProvider, error) {
+func (c CompletedConfig) StorageProviders(discovery clientdiscovery.DiscoveryInterface) ([]server.RESTStorageProvider, error) {
 	legacyRESTStorageProvider, err := corerest.New(corerest.Config{
 		GenericConfig: *c.ControlPlane.NewCoreGenericConfig(),
 		Proxy: corerest.ProxyConfig{
@@ -401,7 +399,7 @@ func (c CompletedConfig) StorageProviders(discovery clientdiscovery.DiscoveryInt
 	// with specific priorities.
 	// TODO: describe the priority all the way down in the RESTStorageProviders and plumb it back through the various discovery
 	// handlers that we have.
-	return []controlplaneapiserver.RESTStorageProvider{
+	return []server.RESTStorageProvider{
 		legacyRESTStorageProvider,
 		apiserverinternalrest.StorageProvider{},
 		authenticationrest.RESTStorageProvider{Authenticator: c.ControlPlane.Generic.Authentication.Authenticator, APIAudiences: c.ControlPlane.Generic.Authentication.APIAudiences},

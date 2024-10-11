@@ -65,10 +65,10 @@ import (
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
 	netutils "k8s.io/utils/net"
 
+	"k8s.io/generic-controlplane/pkg/reconcilers"
+	genericcontrolplaneserver "k8s.io/generic-controlplane/pkg/server"
+	"k8s.io/generic-controlplane/pkg/storageversionhashdata"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
-	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
-	"k8s.io/kubernetes/pkg/controlplane/reconcilers"
-	"k8s.io/kubernetes/pkg/controlplane/storageversionhashdata"
 	generatedopenapi "k8s.io/kubernetes/pkg/generated/openapi"
 	"k8s.io/kubernetes/pkg/kubeapiserver"
 	kubeletclient "k8s.io/kubernetes/pkg/kubelet/client"
@@ -90,9 +90,9 @@ func setUp(t *testing.T) (*etcd3testing.EtcdTestServer, Config, *assert.Assertio
 	server, storageConfig := etcd3testing.NewUnsecuredEtcd3TestClientServer(t)
 
 	config := &Config{
-		ControlPlane: controlplaneapiserver.Config{
+		ControlPlane: genericcontrolplaneserver.Config{
 			Generic: genericapiserver.NewConfig(legacyscheme.Codecs),
-			Extra: controlplaneapiserver.Extra{
+			Extra: genericcontrolplaneserver.Extra{
 				APIResourceConfigSource: DefaultAPIResourceConfigSource(),
 			},
 		},

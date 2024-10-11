@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package apiserver
+package server
 
 import (
 	"fmt"
@@ -45,8 +45,8 @@ import (
 	informers "k8s.io/kube-aggregator/pkg/client/informers/externalversions/apiregistration/v1"
 	"k8s.io/kube-aggregator/pkg/controllers/autoregister"
 
-	"k8s.io/kubernetes/pkg/controlplane/apiserver/options"
-	"k8s.io/kubernetes/pkg/controlplane/controller/crdregistration"
+	"k8s.io/generic-controlplane/pkg/controller/crdregistration"
+	"k8s.io/generic-controlplane/pkg/server/options"
 )
 
 func CreateAggregatorConfig(

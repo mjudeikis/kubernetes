@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package apiserver
+package server
 
 import (
 	"context"
@@ -50,10 +50,10 @@ import (
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
 	openapicommon "k8s.io/kube-openapi/pkg/common"
 
+	"k8s.io/generic-controlplane/pkg/controller/clusterauthenticationtrust"
+	controlplaneadmission "k8s.io/generic-controlplane/pkg/server/admission"
+	"k8s.io/generic-controlplane/pkg/server/options"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
-	controlplaneadmission "k8s.io/kubernetes/pkg/controlplane/apiserver/admission"
-	"k8s.io/kubernetes/pkg/controlplane/apiserver/options"
-	"k8s.io/kubernetes/pkg/controlplane/controller/clusterauthenticationtrust"
 	"k8s.io/kubernetes/pkg/features"
 	"k8s.io/kubernetes/pkg/kubeapiserver"
 	"k8s.io/kubernetes/pkg/kubeapiserver/authorizer/modes"

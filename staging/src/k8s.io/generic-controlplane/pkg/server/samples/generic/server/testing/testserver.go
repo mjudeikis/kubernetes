@@ -29,7 +29,7 @@ import (
 	"go.etcd.io/etcd/client/pkg/v3/transport"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
-	"k8s.io/kubernetes/pkg/controlplane/apiserver/samples/generic/server"
+	"k8s.io/generic-controlplane/pkg/server/samples/generic/server"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -41,8 +41,8 @@ import (
 	restclient "k8s.io/client-go/rest"
 	cliflag "k8s.io/component-base/cli/flag"
 	logsapi "k8s.io/component-base/logs/api/v1"
+	controlplaneapiserver "k8s.io/generic-controlplane/pkg/server/options"
 	"k8s.io/klog/v2"
-	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver/options"
 	"k8s.io/kubernetes/test/utils/ktesting"
 )
 

@@ -37,7 +37,7 @@ import (
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/klog/v2"
 
-	"k8s.io/kubernetes/pkg/controlplane/reconcilers"
+	"k8s.io/generic-controlplane/pkg/reconcilers"
 )
 
 const (

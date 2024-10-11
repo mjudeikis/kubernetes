@@ -22,11 +22,11 @@ import (
 	"k8s.io/apiserver/pkg/util/webhook"
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
-	"k8s.io/kubernetes/pkg/controlplane"
 
+	controlplaneinstance "k8s.io/generic-controlplane/pkg/controlplane"
+	controlplaneserver "k8s.io/generic-controlplane/pkg/server"
+	"k8s.io/generic-controlplane/pkg/server/options"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
-	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
-	"k8s.io/kubernetes/pkg/controlplane/apiserver/options"
 	generatedopenapi "k8s.io/kubernetes/pkg/generated/openapi"
 )
 
@@ -34,7 +34,7 @@ type Config struct {
 	Options options.CompletedOptions
 
 	Aggregator    *aggregatorapiserver.Config
-	ControlPlane  *controlplaneapiserver.Config
+	ControlPlane  *controlplaneserver.Config
 	APIExtensions *apiextensionsapiserver.Config
 
 	ExtraConfig
@@ -47,7 +47,7 @@ type completedConfig struct {
 	Options options.CompletedOptions
 
 	Aggregator    aggregatorapiserver.CompletedConfig
-	ControlPlane  controlplaneapiserver.CompletedConfig
+	ControlPlane  controlplaneserver.CompletedConfig
 	APIExtensions apiextensionsapiserver.CompletedConfig
 
 	ExtraConfig
@@ -77,10 +77,10 @@ func NewConfig(opts options.CompletedOptions) (*Config, error) {
 		Options: opts,
 	}
 
-	genericConfig, versionedInformers, storageFactory, err := controlplaneapiserver.BuildGenericConfig(
+	genericConfig, versionedInformers, storageFactory, err := controlplaneserver.BuildGenericConfig(
 		opts,
 		[]*runtime.Scheme{legacyscheme.Scheme, apiextensionsapiserver.Scheme, aggregatorscheme.Scheme},
-		controlplane.DefaultAPIResourceConfigSource(),
+		controlplaneinstance.DefaultAPIResourceConfigSource(),
 		generatedopenapi.GetOpenAPIDefinitions,
 	)
 	if err != nil {
@@ -88,20 +88,20 @@ func NewConfig(opts options.CompletedOptions) (*Config, error) {
 	}
 
 	serviceResolver := webhook.NewDefaultServiceResolver()
-	kubeAPIs, pluginInitializer, err := controlplaneapiserver.CreateConfig(opts, genericConfig, versionedInformers, storageFactory, serviceResolver, nil)
+	kubeAPIs, pluginInitializer, err := controlplaneserver.CreateConfig(opts, genericConfig, versionedInformers, storageFactory, serviceResolver, nil)
 	if err != nil {
 		return nil, err
 	}
 	c.ControlPlane = kubeAPIs
 
 	authInfoResolver := webhook.NewDefaultAuthenticationInfoResolverWrapper(kubeAPIs.ProxyTransport, kubeAPIs.Generic.EgressSelector, kubeAPIs.Generic.LoopbackClientConfig, kubeAPIs.Generic.TracerProvider)
-	apiExtensions, err := controlplaneapiserver.CreateAPIExtensionsConfig(*kubeAPIs.Generic, kubeAPIs.VersionedInformers, pluginInitializer, opts, 3, serviceResolver, authInfoResolver)
+	apiExtensions, err := controlplaneserver.CreateAPIExtensionsConfig(*kubeAPIs.Generic, kubeAPIs.VersionedInformers, pluginInitializer, opts, 3, serviceResolver, authInfoResolver)
 	if err != nil {
 		return nil, err
 	}
 	c.APIExtensions = apiExtensions
 
-	aggregator, err := controlplaneapiserver.CreateAggregatorConfig(*kubeAPIs.Generic, opts, kubeAPIs.VersionedInformers, serviceResolver, kubeAPIs.ProxyTransport, kubeAPIs.Extra.PeerProxy, pluginInitializer)
+	aggregator, err := controlplaneserver.CreateAggregatorConfig(*kubeAPIs.Generic, opts, kubeAPIs.VersionedInformers, serviceResolver, kubeAPIs.ProxyTransport, kubeAPIs.Extra.PeerProxy, pluginInitializer)
 	if err != nil {
 		return nil, err
 	}

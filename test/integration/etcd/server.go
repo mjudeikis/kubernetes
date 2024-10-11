@@ -53,7 +53,7 @@ import (
 	netutils "k8s.io/utils/net"
 
 	// install all APIs
-	_ "k8s.io/kubernetes/pkg/controlplane"
+	_ "k8s.io/generic-controlplane/pkg/controlplane"
 )
 
 // This key is for testing purposes only and is not considered secure.

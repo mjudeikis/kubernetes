@@ -36,8 +36,8 @@ import (
 	"k8s.io/client-go/restmapper"
 	coretesting "k8s.io/client-go/testing"
 
+	controlplaneadmission "k8s.io/generic-controlplane/pkg/server/admission"
 	api "k8s.io/kubernetes/pkg/apis/core"
-	controlplaneadmission "k8s.io/kubernetes/pkg/controlplane/apiserver/admission"
 )
 
 type fakeAuthorizer struct{}

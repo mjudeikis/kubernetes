@@ -25,7 +25,7 @@ import (
 	_ "k8s.io/component-base/metrics/prometheus/workqueue"
 	netutils "k8s.io/utils/net"
 
-	controlplane "k8s.io/kubernetes/pkg/controlplane/apiserver/options"
+	controlplane "k8s.io/generic-controlplane/pkg/server/options"
 	"k8s.io/kubernetes/pkg/kubeapiserver"
 	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
 )

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package apiserver
+package server
 
 import (
 	"context"
@@ -40,11 +40,11 @@ import (
 	"k8s.io/klog/v2"
 	"k8s.io/utils/clock"
 
-	"k8s.io/kubernetes/pkg/controlplane/controller/apiserverleasegc"
-	"k8s.io/kubernetes/pkg/controlplane/controller/clusterauthenticationtrust"
-	"k8s.io/kubernetes/pkg/controlplane/controller/leaderelection"
-	"k8s.io/kubernetes/pkg/controlplane/controller/legacytokentracking"
-	"k8s.io/kubernetes/pkg/controlplane/controller/systemnamespaces"
+	"k8s.io/generic-controlplane/pkg/controller/apiserverleasegc"
+	"k8s.io/generic-controlplane/pkg/controller/clusterauthenticationtrust"
+	"k8s.io/generic-controlplane/pkg/controller/leaderelection"
+	"k8s.io/generic-controlplane/pkg/controller/legacytokentracking"
+	"k8s.io/generic-controlplane/pkg/controller/systemnamespaces"
 	"k8s.io/kubernetes/pkg/features"
 	"k8s.io/kubernetes/pkg/routes"
 	"k8s.io/kubernetes/pkg/serviceaccount"
