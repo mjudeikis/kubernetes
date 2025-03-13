@@ -2079,6 +2079,9 @@ var defaultVersionedKubernetesFeatureGates = map[featuregate.Feature]featuregate
 	zpagesfeatures.ComponentStatusz: {
 		{Version: version.MustParse("1.32"), Default: false, PreRelease: featuregate.Alpha},
 	},
+	GlobalServiceAccount: {
+		{Version: version.MustParse("1.31"), Default: false, PreRelease: featuregate.Alpha},
+	},
 }
 
 func init() {
