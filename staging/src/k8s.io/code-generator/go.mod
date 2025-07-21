@@ -32,6 +32,9 @@ require (
 	github.com/google/pprof v0.0.0-20241029153458-d1b30febd7db // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/kcp-dev/apimachinery/v2 v2.0.1-0.20250717064240-78e565b4a69a
+	github.com/kcp-dev/client-go v0.0.0-20250721105427-d4a93d7c5fc9
+	github.com/kcp-dev/logicalcluster/v3 v3.0.5
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect

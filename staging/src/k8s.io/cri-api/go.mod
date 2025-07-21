@@ -15,6 +15,9 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
+	github.com/kcp-dev/apimachinery/v2 v2.0.1-0.20250717064240-78e565b4a69a
+	github.com/kcp-dev/client-go v0.0.0-20250721105427-d4a93d7c5fc9
+	github.com/kcp-dev/logicalcluster/v3 v3.0.5
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
