@@ -27,6 +27,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/kcp-dev/logicalcluster/v3"
 	"go.etcd.io/etcd/api/v3/mvccpb"
 	clientv3 "go.etcd.io/etcd/client/v3"
@@ -257,7 +258,7 @@ func (s *store) Get(ctx context.Context, key string, opts storage.GetOptions, ou
 	}
 
 	shardName := endpointsrequest.ShardFrom(ctx)
-	err = decode(s.codec, s.versioner, data, out, getResp.KV.ModRevision, clusterName, shardName)
+	err = s.decode(s.codec, s.versioner, data, out, getResp.KV.ModRevision, clusterName, shardName)
 	if err != nil {
 		recordDecodeError(s.groupResource, preparedKey)
 		return err
@@ -328,7 +329,7 @@ func (s *store) Create(ctx context.Context, key string, obj, out runtime.Object,
 
 	if out != nil {
 		shardName := endpointsrequest.ShardFrom(ctx)
-		err = decode(s.codec, s.versioner, data, out, txnResp.Revision, clusterName, shardName)
+		err = s.decode(s.codec, s.versioner, data, out, txnResp.Revision, clusterName, shardName)
 		if err != nil {
 			span.AddEvent("decode failed", attribute.Int("len", len(data)), attribute.String("err", err.Error()))
 			recordDecodeError(s.groupResource, preparedKey)
@@ -455,7 +456,7 @@ func (s *store) conditionalDelete(
 		}
 
 		if !skipTransformDecode {
-			err = decode(s.codec, s.versioner, origState.data, out, txnResp.Revision, clusterName, shardName)
+			err = s.decode(s.codec, s.versioner, origState.data, out, txnResp.Revision, clusterName, shardName)
 			if err != nil {
 				recordDecodeError(s.groupResource, key)
 				return err
@@ -579,7 +580,7 @@ func (s *store) GuaranteedUpdate(
 			}
 			// recheck that the data from etcd is not stale before short-circuiting a write
 			if !origState.stale {
-				err = decode(s.codec, s.versioner, origState.data, destination, origState.rev, clusterName, shardName)
+				err = s.decode(s.codec, s.versioner, origState.data, destination, origState.rev, clusterName, shardName)
 				if err != nil {
 					recordDecodeError(s.groupResource, preparedKey)
 					return err
@@ -628,7 +629,7 @@ func (s *store) GuaranteedUpdate(
 			continue
 		}
 
-		err = decode(s.codec, s.versioner, data, destination, txnResp.Revision, clusterName, shardName)
+		err = s.decode(s.codec, s.versioner, data, destination, txnResp.Revision, clusterName, shardName)
 		if err != nil {
 			span.AddEvent("decode failed", attribute.Int("len", len(data)), attribute.String("err", err.Error()))
 			recordDecodeError(s.groupResource, preparedKey)
@@ -884,7 +885,7 @@ func (s *store) GetList(ctx context.Context, key string, opts storage.ListOption
 			// kcp
 			clusterName := adjustClusterNameIfWildcard(shard, cluster, crdIndicator, keyPrefix, string(kv.Key))
 			shardName := adjustShardNameIfWildcard(shard, keyPrefix, string(kv.Key))
-			obj, err := decodeListItem(ctx, data, uint64(kv.ModRevision), s.codec, s.versioner, newItemFunc, clusterName, shardName)
+			obj, err := s.decodeListItem(ctx, data, kv.ModRevision, s.codec, s.versioner, newItemFunc, clusterName, shardName)
 			if err != nil {
 				recordDecodeError(s.groupResource, string(kv.Key))
 				if done := aggregator.Aggregate(string(kv.Key), err); done {
@@ -1069,8 +1070,8 @@ func (s *store) getState(ctx context.Context, kv *mvccpb.KeyValue, key string, v
 
 		state.data = data
 		state.stale = stale
-		if err := decode(s.codec, s.versioner, state.data, state.obj, state.rev, clusterName, shardName); err != nil {
-			recordDecodeError(s.groupResourceString, key)
+		if err := s.decode(s.codec, s.versioner, state.data, state.obj, state.rev, clusterName, shardName); err != nil {
+			recordDecodeError(s.groupResource, key)
 			return nil, err
 		}
 	}
@@ -1099,7 +1100,7 @@ func (s *store) getStateFromObject(obj runtime.Object) (*objState, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := s.versioner.UpdateObject(state.obj, uint64(rv)); err != nil {
+	if err := s.versioner.UpdateObject(state.obj, rv); err != nil {
 		klog.Errorf("failed to update object version: %v", err)
 	}
 	return state, nil
@@ -1165,12 +1166,13 @@ func (s *store) prepareKey(key string) (string, error) {
 
 // decode decodes value of bytes into object. It will also set the object resource version to rev.
 // On success, objPtr would be set to the object.
-func decode(codec runtime.Codec, versioner storage.Versioner, value []byte, objPtr runtime.Object, rev int64, clusterName logicalcluster.Name, shardName endpointsrequest.Shard) error {
+func (s *store) decode(codec runtime.Codec, versioner storage.Versioner, value []byte, objPtr runtime.Object, rev int64, clusterName logicalcluster.Name, shardName endpointsrequest.Shard) error {
 	if _, err := conversion.EnforcePtr(objPtr); err != nil {
 		return fmt.Errorf("unable to convert output object to pointer: %v", err)
 	}
-	_, _, err := codec.Decode(value, nil, objPtr)
+	err := s.decoder.Decode(value, objPtr, rev)
 	if err != nil {
+		spew.Dump(err)
 		return err
 	}
 	// being unable to set the version does not prevent the object from being extracted
@@ -1185,18 +1187,19 @@ func decode(codec runtime.Codec, versioner storage.Versioner, value []byte, objP
 }
 
 // decodeListItem decodes bytes value in array into object.
-func decodeListItem(ctx context.Context, data []byte, rev uint64, codec runtime.Codec, versioner storage.Versioner, newItemFunc func() runtime.Object, clusterName logicalcluster.Name, shardName endpointsrequest.Shard) (runtime.Object, error) {
+func (s *store) decodeListItem(ctx context.Context, data []byte, rev int64, codec runtime.Codec, versioner storage.Versioner, newItemFunc func() runtime.Object, clusterName logicalcluster.Name, shardName endpointsrequest.Shard) (runtime.Object, error) {
 	startedAt := time.Now()
 	defer func() {
 		endpointsrequest.TrackDecodeLatency(ctx, time.Since(startedAt))
 	}()
+	obj := newItemFunc()
 
-	obj, _, err := codec.Decode(data, nil, newItemFunc())
+	err := s.decoder.Decode(data, obj, rev)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := versioner.UpdateObject(obj, rev); err != nil {
+	if err := versioner.UpdateObject(obj, uint64(rev)); err != nil {
 		klog.Errorf("failed to update object version: %v", err)
 	}
 

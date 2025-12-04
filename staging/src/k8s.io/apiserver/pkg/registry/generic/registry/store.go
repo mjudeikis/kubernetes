@@ -1705,7 +1705,7 @@ func (e *Store) CompleteWithOptions(options *generic.StoreOptions) error {
 // startObservingCount starts monitoring given prefix and periodically updating metrics. It returns a function to stop collection.
 func (e *Store) startObservingCount(period time.Duration, objectCountTracker flowcontrolrequest.StorageObjectCountTracker) func() {
 	ctx := genericapirequest.NewContext()
-	prefix := e.KeyRootFunc(genericapirequest.WithCluster(ctx), genericapirequest.Cluster{Wildcard: true}))
+	prefix := e.KeyRootFunc(genericapirequest.WithCluster(ctx, genericapirequest.Cluster{Wildcard: true}))
 	resourceName := e.DefaultQualifiedResource.String()
 	klog.V(2).InfoS("Monitoring resource count at path", "resource", resourceName, "path", "<storage-prefix>/"+prefix)
 	stopCh := make(chan struct{})
