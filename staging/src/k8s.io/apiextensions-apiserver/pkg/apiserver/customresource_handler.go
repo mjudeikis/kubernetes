@@ -95,7 +95,6 @@ import (
 	"k8s.io/klog/v2"
 	"k8s.io/kube-openapi/pkg/spec3"
 	"k8s.io/kube-openapi/pkg/validation/spec"
-	"sigs.k8s.io/structured-merge-diff/v4/fieldpath"
 )
 
 // KcpValidateNameAnnotationKey is the annotation key used to indicate that a CRD should be validated

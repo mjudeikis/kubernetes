@@ -208,17 +208,6 @@ func BuildGenericConfig(
 
 	ctx := wait.ContextForChannel(genericConfig.DrainedNotify())
 
-	// Disable compression for self-communication, since we are going to be
-	// on a fast local network
-	genericConfig.LoopbackClientConfig.DisableCompression = true
-
-	clusterClient, err := kcpclient.NewForConfig(kubeClientConfig)
-	if err != nil {
-		lastErr = fmt.Errorf("failed to create cluster clientset: %v", err)
-		return
-	}
-	versionedInformers = kcpinformers.NewSharedInformerFactory(clusterClient, 10*time.Minute)
-
 	// Authentication.ApplyTo requires already applied OpenAPIConfig and EgressSelector if present
 	if lastErr = s.Authentication.ApplyTo(ctx, &genericConfig.Authentication, genericConfig.SecureServing, genericConfig.EgressSelector, genericConfig.OpenAPIConfig, genericConfig.OpenAPIV3Config, clusterClient, versionedInformers, genericConfig.APIServerID); lastErr != nil {
 		return

@@ -47,6 +47,7 @@ import (
 	genericapi "k8s.io/apiserver/pkg/endpoints"
 	"k8s.io/apiserver/pkg/endpoints/discovery"
 	discoveryendpoint "k8s.io/apiserver/pkg/endpoints/discovery/aggregated"
+	"k8s.io/apiserver/pkg/endpoints/request"
 	genericrequest "k8s.io/apiserver/pkg/endpoints/request"
 
 	"k8s.io/apiserver/pkg/features"
@@ -462,7 +463,7 @@ func (s *GenericAPIServer) PrepareRun() preparedGenericAPIServer {
 	s.installReadyz()
 
 	if utilfeature.DefaultFeatureGate.Enabled(zpagesfeatures.ComponentStatusz) {
-		statusz.Install(s.Handler.NonGoRestfulMux, "apiserver", statusz.NewRegistry(s.EffectiveVersion, statusz.WithListedPaths(s.ListedPaths())))
+		statusz.Install(s.Handler.NonGoRestfulMux, "apiserver", statusz.NewRegistry(s.EffectiveVersion, statusz.WithListedPaths(s.ListedPaths(&request.Cluster{}))))
 	}
 
 	return preparedGenericAPIServer{s}
