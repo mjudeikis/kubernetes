@@ -145,6 +145,8 @@ type Reflector struct {
 	//
 	// See https://github.com/kubernetes/enhancements/tree/master/keps/sig-api-machinery/3157-watch-list#design-details
 	useWatchList bool
+	// keyFunc is the function to use to key objects in the store.
+	keyFunc KeyFunc
 }
 
 func (r *Reflector) Name() string {
@@ -248,6 +250,10 @@ type ReflectorOptions struct {
 
 	// Clock allows tests to control time. If unset defaults to clock.RealClock{}
 	Clock clock.Clock
+
+	// KeyFunc is the function to use to key objects in the store. If unset/unspecified, the default
+	// DeletionHandlingMetaNamespaceKeyFunc is used.
+	KeyFunc KeyFunc
 }
 
 // NewReflectorWithOptions creates a new Reflector object which will keep the
@@ -269,6 +275,9 @@ func NewReflectorWithOptions(lw ListerWatcher, expectedType interface{}, store R
 	if options.MinWatchTimeout > defaultMinWatchTimeout {
 		minWatchTimeout = options.MinWatchTimeout
 	}
+	if options.KeyFunc == nil {
+		options.KeyFunc = DeletionHandlingMetaNamespaceKeyFunc
+	}
 	r := &Reflector{
 		name:            options.Name,
 		resyncPeriod:    options.ResyncPeriod,
@@ -283,6 +292,7 @@ func NewReflectorWithOptions(lw ListerWatcher, expectedType interface{}, store R
 		clock:             reflectorClock,
 		watchErrorHandler: WatchErrorHandlerWithContext(DefaultWatchErrorHandler),
 		expectedType:      reflect.TypeOf(expectedType),
+		keyFunc:           options.KeyFunc,
 	}
 
 	if r.name == "" {
@@ -753,7 +763,7 @@ func (r *Reflector) watchList(ctx context.Context) (watch.Interface, error) {
 
 		resourceVersion = ""
 		lastKnownRV := r.rewatchResourceVersion()
-		temporaryStore = NewStore(DeletionHandlingMetaNamespaceKeyFunc, storeOpts...)
+		temporaryStore = NewStore(r.keyFunc, storeOpts...)
 		// TODO(#115478): large "list", slow clients, slow network, p&f
 		//  might slow down streaming and eventually fail.
 		//  maybe in such a case we should retry with an increased timeout?

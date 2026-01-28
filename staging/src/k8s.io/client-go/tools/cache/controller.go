@@ -96,6 +96,10 @@ type Config struct {
 
 	// WatchListPageSize is the requested chunk size of initial and relist watch lists.
 	WatchListPageSize int64
+
+	// KeyFunc is the function to use to key objects in the store. If unset/unspecified, the default
+	// DeletionHandlingMetaNamespaceKeyFunc is used.
+	KeyFunc KeyFunc
 }
 
 // ShouldResyncFunc is a type of function that indicates if a reflector should perform a
@@ -176,6 +180,7 @@ func (c *controller) RunWithContext(ctx context.Context) {
 			MinWatchTimeout: c.config.MinWatchTimeout,
 			TypeDescription: c.config.ObjectDescription,
 			Clock:           c.clock,
+			KeyFunc:         c.config.KeyFunc,
 		},
 	)
 	r.ShouldResync = c.config.ShouldResync
